@@ -34,6 +34,7 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
         selected: state.selected || data[0] || null,
       }));
     } catch (e) {
+      console.error("Error fetching LED strips:", e);
       set({ error: (e as Error).message });
     } finally {
       set({ loading: false });

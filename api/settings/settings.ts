@@ -17,6 +17,8 @@ export async function updateSettings(payload: unknown) {
     body: JSON.stringify(payload),
   });
 
+  console.log(JSON.stringify(payload));
+
   if (!response.ok) {
     throw new Error("Failed to update led strips");
   }

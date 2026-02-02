@@ -57,9 +57,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       await updateSettings(data);
-      const refreshedData = await getSettings();
-
-      set({ data: refreshedData, loading: false });
+      // const refreshedData = await getSettings();
+      set({ loading: false });
+      // console.log("Visszajött adat", refreshedData);
     } catch (e) {
       set({
         error: `Save failed: ${(e as Error).message}`,

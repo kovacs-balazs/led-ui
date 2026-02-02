@@ -1,5 +1,5 @@
 import { ThemedView } from "@/components/themed-view";
-import { Text, View } from "react-native";
+import { Keyboard, Pressable, Text, View } from "react-native";
 import {
   KobaInputBox,
   KobaInputBoxRef,
@@ -44,7 +44,7 @@ export default function SettingsScreen() {
       return;
     }
 
-    updateWiFi({password: password});
+    updateWiFi({ password: password });
     setWifiPasswordInputError("");
   };
 
@@ -56,37 +56,40 @@ export default function SettingsScreen() {
     }
 
     update({ bluetoothName: name });
+    console.log(data.bluetoothName);
     setBluetoothNameInputError("");
   };
 
   return (
-    <ThemedView className="flex">
-      <View className="p-4 flex-col gap-4">
-        <KobaInputBox
-          ref={wifiNameInputRef}
-          label="Wi-Fi Name"
-          initialValue={data.wifi.name}
-          placeholder={"Enter name..."}
-          onSubmit={handleWiFINameSubmit}
-          error={wifiNameInputError}
-        />
-        <KobaInputBox
-          ref={wifiPasswordInputRef}
-          label="Wi-Fi Password"
-          initialValue={data.wifi.password}
-          placeholder={"Enter password..."}
-          onSubmit={handleWiFIPasswordSubmit}
-          error={wifiPasswordInputError}
-        />
-        <KobaInputBox
-          ref={bluetoothNameInputRef}
-          label="Bluetooth Name"
-          initialValue={data.bluetoothName}
-          placeholder={"Enter name..."}
-          onSubmit={handleBluetoothNameSubmit}
-          error={bluetoothNameInputError}
-        />
-      </View>
+    <ThemedView className="flex-1">
+      <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
+        <View className="p-4 flex-col gap-4">
+          <KobaInputBox
+            ref={wifiNameInputRef}
+            label="Wi-Fi Name"
+            initialValue={data.wifi.name}
+            placeholder={"Enter name..."}
+            onSubmit={handleWiFINameSubmit}
+            error={wifiNameInputError}
+          />
+          <KobaInputBox
+            ref={wifiPasswordInputRef}
+            label="Wi-Fi Password"
+            initialValue={data.wifi.password}
+            placeholder={"Enter password..."}
+            onSubmit={handleWiFIPasswordSubmit}
+            error={wifiPasswordInputError}
+          />
+          <KobaInputBox
+            ref={bluetoothNameInputRef}
+            label="Bluetooth Name"
+            initialValue={data.bluetoothName}
+            placeholder={"Enter name..."}
+            onSubmit={handleBluetoothNameSubmit}
+            error={bluetoothNameInputError}
+          />
+        </View>
+      </Pressable>
     </ThemedView>
   );
 }

@@ -14,6 +14,7 @@ import {
 } from "@/components/kobalib/koba-inputbox";
 import { useCallback, useRef, useState } from "react";
 import KobaNumberInputBox from "@/components/kobalib/koba-number-inputbox";
+import { ThemedView } from "@/components/themed-view";
 
 export default function LedStripSettings() {
   const { id } = useLocalSearchParams<{ id: any }>();
@@ -78,6 +79,7 @@ export default function LedStripSettings() {
         options={{
           title: ledStrip ? ledStrip.name : "LED Settings",
           headerBackVisible: Platform.OS !== "ios",
+          headerTitleStyle: { fontSize: 20 }
           // headerLeft: () =>
           //   Platform.OS === "ios" ? (
           //     <Pressable onPress={() => router.back()} className="px-4">
@@ -87,55 +89,56 @@ export default function LedStripSettings() {
         }}
       />
 
-      <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-        <View className="flex-1 p-10 justify-between">
-          {/* Felső gombok */}
-          <View className="flex gap-6">
-            <KobaInputBox
-              ref={nameInputRef}
-              label="Name"
-              initialValue={ledStrip.name}
-              placeholder={"Enter name"}
-              onSubmit={handleNameSubmit}
-              error={nameInputError}
-            />
-            <KobaNumberInputBox
-              label={"Pin"}
-              initialValue={ledStrip.pin}
-              maxValue={12}
-              onSubmit={(e) => update({ id: ledStrip.id, pin: e })}
-            />
-            <KobaNumberInputBox
-              label={"LED Count"}
-              initialValue={ledStrip.ledCount}
-              maxValue={999}
-              onSubmit={(e) => update({ id: ledStrip.id, ledCount: e })}
-            />
-          </View>
+      <ThemedView className="flex-1">
+        <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
+          <View className="flex-1 p-10 justify-between">
+            {/* Felső gombok */}
+            <View className="flex gap-6">
+              <KobaInputBox
+                ref={nameInputRef}
+                label="Name"
+                initialValue={ledStrip.name}
+                placeholder={"Enter name"}
+                onSubmit={handleNameSubmit}
+                error={nameInputError}
+              />
+              <KobaNumberInputBox
+                label={"Pin"}
+                initialValue={ledStrip.pin}
+                maxValue={12}
+                onSubmit={(e) => update({ id: ledStrip.id, pin: e })}
+              />
+              <KobaNumberInputBox
+                label={"LED Count"}
+                initialValue={ledStrip.ledCount}
+                maxValue={999}
+                onSubmit={(e) => update({ id: ledStrip.id, ledCount: e })}
+              />
+            </View>
 
-          {/* Alsó rész */}
-          <View className="mb-4">
-            <Pressable onLongPress={handleDelete} delayLongPress={1000}>
-              {({ pressed }) => {
-                return (
-                  <View
-                    className={
-                      pressed
-                        ? "bg-red-500 p-3 rounded-lg scale-95"
-                        : "bg-red-500 p-3 rounded-lg scale-100"
-                    }
-                  >
-                    <Text className="text-neutral-200 font-semibold text-lg text-center">
-                      Delete (Hold)
-                    </Text>
-                    <Text className="flex text-neutral-200">asd</Text>
-                  </View>
-                );
-              }}
-            </Pressable>
+            {/* Alsó rész */}
+            <View className="mb-4">
+              <Pressable onLongPress={handleDelete} delayLongPress={1000}>
+                {({ pressed }) => {
+                  return (
+                    <View
+                      className={
+                        pressed
+                          ? "bg-red-500 p-3 rounded-lg scale-95"
+                          : "bg-red-500 p-3 rounded-lg scale-100"
+                      }
+                    >
+                      <Text className="text-neutral-200 font-semibold text-lg text-center">
+                        Delete (Hold)
+                      </Text>
+                    </View>
+                  );
+                }}
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </Pressable>
+        </Pressable>
+      </ThemedView>
     </>
   );
 }

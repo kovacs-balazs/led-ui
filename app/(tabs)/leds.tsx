@@ -7,6 +7,7 @@ import { LedStrip } from "@/components/leds/ledstrip";
 import { TypeLedStrip } from "@/types/types";
 import { useEffect } from "react";
 import { generateUniqueName } from '../../utils/utils'
+import { useSettingsStore } from "@/hooks/use-settings";
 
 /*
 // Mentés gombra kattintva
@@ -16,12 +17,23 @@ const handleSave = async () => {
  */
 
 export default function HomeScreen() {
-  const { data, selected, fetch: fetchLedStrips, add } = useLedStripsStore();
+  const { data, selected, fetch: fetchLedStrips, add, loading } = useLedStripsStore();
+  const { fetch: fetchSettings } = useSettingsStore();
 
   useEffect(() => {
     fetchLedStrips();
-    console.log("Fetched ledstrips");
-  }, [fetchLedStrips]);
+    fetchSettings();
+    console.log("Fetched ledstrips and settings");
+  }, [fetchLedStrips, fetchSettings]);
+
+  // Show loading indicator while fetching
+  if (loading && data.length === 0) {
+    return (
+      <ThemedView className="flex-1 justify-center items-center">
+        <Text>Loading LED strips...</Text>
+      </ThemedView>
+    );
+  }
 
   const handleAdd = () => {
     add({
