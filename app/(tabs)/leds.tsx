@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { ThemedView } from "@/components/themed-view";
 
 import "../../global.css";
@@ -6,6 +6,7 @@ import { useLedStripsStore } from "@/hooks/use-ledstrips";
 import { LedStrip } from "@/components/leds/ledstrip";
 import { TypeLedStrip } from "@/types/types";
 import { useEffect } from "react";
+import { generateUniqueName } from '../../utils/utils'
 
 /*
 // Mentés gombra kattintva
@@ -15,24 +16,52 @@ const handleSave = async () => {
  */
 
 export default function HomeScreen() {
-  const { data, selected, fetch: fetchLedStrips } = useLedStripsStore();
+  const { data, selected, fetch: fetchLedStrips, add } = useLedStripsStore();
 
   useEffect(() => {
     fetchLedStrips();
-    console.log("Fetched ledstrips")
+    console.log("Fetched ledstrips");
   }, [fetchLedStrips]);
 
+  const handleAdd = () => {
+    add({
+      name: generateUniqueName(data),
+      pin: 0,
+      ledCount: 50,
+      power: false,
+      animation: 0,
+      animations: [],
+    });
+  };
+
   return (
-    <ThemedView className="flex-1">
-      <View className="flex flex-col p-4 gap-4 overflow-y-auto">
-        {data.map((ledStrip) => (
-          <LedStrip
-            key={ledStrip.name}
-            ledStrip={ledStrip}
-            selected={selected === ledStrip}
-          />
-        ))}
-      </View>
+    <ThemedView className="flex-1 justify-between">
+      <ScrollView className="flex flex-col p-4 overflow-y-auto">
+        <View className="flex gap-4">
+          {data.map((ledStrip) => (
+            <LedStrip
+              key={ledStrip.name}
+              ledStrip={ledStrip}
+              selected={selected === ledStrip}
+            />
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Add Button */}
+      <Pressable className="py-4 px-24" onPress={handleAdd}>
+        {({ pressed }) => {
+          return (
+            <View
+              className={`p-2.5 bg-cyan-600 rounded-xl ${pressed ? "scale-95" : "scale-100"}`}
+            >
+              <Text className="text-xl text-neutral-200 font-bold text-center">
+                Add
+              </Text>
+            </View>
+          );
+        }}
+      </Pressable>
     </ThemedView>
   );
 }

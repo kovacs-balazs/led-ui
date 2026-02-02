@@ -1,3 +1,13 @@
+export interface WiFiSettings {
+  name: string;
+  password: string;
+}
+
+export interface Settings {
+  wifi: WiFiSettings;
+  bluetoothName: string;
+}
+
 export interface RGBColor {
   r: number;
   g: number;

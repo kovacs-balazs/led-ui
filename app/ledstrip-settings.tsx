@@ -1,6 +1,7 @@
 import { TypeLedStrip } from "@/types/types";
 import { Alert, Keyboard, Platform, Pressable, Text, View } from "react-native";
 import {
+  router,
   Stack,
   useFocusEffect,
   useLocalSearchParams,
@@ -17,7 +18,7 @@ import KobaNumberInputBox from "@/components/kobalib/koba-number-inputbox";
 export default function LedStripSettings() {
   const { id } = useLocalSearchParams<{ id: any }>();
   const ledId = Number(id);
-  const { data, update } = useLedStripsStore();
+  const { data, delete: deleteStrip, update } = useLedStripsStore();
   const ledStrip: TypeLedStrip | undefined = data.find((s) => s.id === ledId);
 
   const nameInputRef = useRef<KobaInputBoxRef>(null);
@@ -65,6 +66,12 @@ export default function LedStripSettings() {
     setNameInputError("");
   };
 
+  const handleDelete = () => {
+    deleteStrip(ledStrip.id);
+    console.log("Delete ledStrip", ledStrip.id);
+    router.back();
+  };
+
   return (
     <>
       <Stack.Screen
@@ -81,47 +88,52 @@ export default function LedStripSettings() {
       />
 
       <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-        <View className="flex p-10 gap-6">
-          <KobaInputBox
-            ref={nameInputRef}
-            label="Name"
-            initialValue={ledStrip.name}
-            placeholder={"Enter name"}
-            onSubmit={handleNameSubmit}
-            error={nameInputError}
-          />
-          <KobaNumberInputBox
-            label={"Pin"}
-            initialValue={ledStrip.pin}
-            maxValue={12}
-            onSubmit={(e) => update({ id: ledStrip.id, pin: e })}
-          />
-          <KobaNumberInputBox
-            label={"LED Count"}
-            initialValue={ledStrip.ledCount}
-            maxValue={999}
-            onSubmit={(e) => update({ id: ledStrip.id, ledCount: e })}
-          />
-          <Pressable
-            onLongPress={() => console.log("Deleted", ledStrip.name)}
-            delayLongPress={1000}
-          >
-            {({ pressed }) => {
-              return (
-                <View
-                  className={
-                    pressed
-                      ? "bg-red-500 px-4 py-2 rounded-lg scale-95"
-                      : "bg-red-500 px-4 py-2 rounded-lg scale-100"
-                  }
-                >
-                  <Text className="text-white font-medium text-center">
-                    Delete
-                  </Text>
-                </View>
-              );
-            }}
-          </Pressable>
+        <View className="flex-1 p-10 justify-between">
+          {/* Felső gombok */}
+          <View className="flex gap-6">
+            <KobaInputBox
+              ref={nameInputRef}
+              label="Name"
+              initialValue={ledStrip.name}
+              placeholder={"Enter name"}
+              onSubmit={handleNameSubmit}
+              error={nameInputError}
+            />
+            <KobaNumberInputBox
+              label={"Pin"}
+              initialValue={ledStrip.pin}
+              maxValue={12}
+              onSubmit={(e) => update({ id: ledStrip.id, pin: e })}
+            />
+            <KobaNumberInputBox
+              label={"LED Count"}
+              initialValue={ledStrip.ledCount}
+              maxValue={999}
+              onSubmit={(e) => update({ id: ledStrip.id, ledCount: e })}
+            />
+          </View>
+
+          {/* Alsó rész */}
+          <View className="mb-4">
+            <Pressable onLongPress={handleDelete} delayLongPress={1000}>
+              {({ pressed }) => {
+                return (
+                  <View
+                    className={
+                      pressed
+                        ? "bg-red-500 p-3 rounded-lg scale-95"
+                        : "bg-red-500 p-3 rounded-lg scale-100"
+                    }
+                  >
+                    <Text className="text-neutral-200 font-semibold text-lg text-center">
+                      Delete (Hold)
+                    </Text>
+                    <Text className="flex text-neutral-200">asd</Text>
+                  </View>
+                );
+              }}
+            </Pressable>
+          </View>
         </View>
       </Pressable>
     </>

@@ -66,7 +66,7 @@ export function LedStrip({ ledStrip, selected }: LedStripProps) {
             {ledStrip.name}
           </Text>
           <Text className="text-neutral-800 dark:text-neutral-300 text-md">
-            {ledStrip.pin}
+            p{ledStrip.pin}
           </Text>
         </View>
 
