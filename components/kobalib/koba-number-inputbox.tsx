@@ -1,5 +1,5 @@
-import { Text, TextInput, TextInputChangeEvent, View } from "react-native";
-import { useState, forwardRef, useImperativeHandle } from "react";
+import { useState } from "react";
+import { Text, TextInput, View } from "react-native";
 
 interface InputProps {
   label: string;
@@ -17,18 +17,17 @@ export default function KobaNumberInputBox({
   onSubmit,
 }: InputProps) {
   const [focused, setFocused] = useState(false);
-  const [text, setText] = useState<string>(initialValue +"");
+  const [text, setText] = useState<string>(initialValue + "");
 
   const handleChange = (input: string) => {
     const numericValue = input.replace(/[^0-9]/g, "");
 
-    let number= parseInt(numericValue, 10);
+    let number = parseInt(numericValue, 10);
     if (isNaN(number)) number = minValue;
 
     // clamp between min/max
     if (number < minValue) number = minValue;
-    if(maxValue)
-      if (number > maxValue) number = maxValue;
+    if (maxValue) if (number > maxValue) number = maxValue;
 
     setText(number.toString());
   };

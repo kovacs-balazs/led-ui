@@ -1,29 +1,42 @@
-import { router, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import React, { useCallback } from "react";
 
 import { HapticTab } from "@/components/haptic-tab";
+import { LedIcon } from "@/components/icons/led-icon";
+import { SaveIcon } from "@/components/icons/save-icon";
+import { SettingsIcon } from "@/components/icons/settings-icon";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { Header } from "@react-navigation/elements";
-import { LedIcon } from "@/components/icons/led-icon";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import { SaveIcon } from "@/components/icons/save-icon";
 import { useLedStripsStore } from "@/hooks/use-ledstrips";
-import { SettingsIcon } from "@/components/icons/settings-icon";
 import { useSettingsStore } from "@/hooks/use-settings";
+import { Header } from "@react-navigation/elements";
+import { ActivityIndicator, Pressable } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   const { save, loading, error } = useLedStripsStore();
-  const { save: settingsSave, loading: settingsLoading, error: settingsError } = useSettingsStore();
+  const {
+    data: settings,
+    save: settingsSave,
+    loading: settingsLoading,
+    error: settingsError,
+  } = useSettingsStore();
 
   const handleSave = useCallback(async () => {
     try {
       await save();
       if (!error) {
         console.log("Saved successfully");
+        Toast.show({
+          type: "success",
+          text1: "Saved!",
+          text2: "Your changes have been saved successfully",
+          position: "bottom",
+          visibilityTime: 2000,
+        });
       }
     } catch (err) {
       console.error("Save failed:", err);
@@ -32,20 +45,37 @@ export default function TabLayout() {
 
   const handleSettingsSave = useCallback(async () => {
     try {
+      if (settings.wifi.password.length < 8) {
+        Toast.show({
+          type: "error",
+          text1: "Error!",
+          text2: "Wi-Fi password must be 8+ characters.",
+          position: "bottom",
+          visibilityTime: 2000,
+        });
+        return;
+      }
       await settingsSave();
       if (!error) {
         console.log("Settings saved successfully");
+        Toast.show({
+          type: "success",
+          text1: "Saved!",
+          text2: "Your changes have been saved successfully",
+          position: "bottom",
+          visibilityTime: 2000,
+        });
       }
     } catch (err) {
       console.error("Settings save failed:", err);
     }
-  }, [settingsSave, settingsError]);
+  }, [settings, settingsSave, settingsError]);
 
   const renderHeaderRight = (disabled: boolean, onPress: () => void) => (
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className="mr-4"
+      className="p-4"
       style={({ pressed }) => ({
         transform: [{ scale: pressed ? 0.8 : 1 }],
       })}
@@ -89,7 +119,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="leds"
+        name="index"
         options={{
           title: "LED Strips",
           tabBarIcon: ({ color }) => (
@@ -100,9 +130,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="animations"
         options={{
-          title: "Explore",
+          title: "Animations",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="paperplane.fill" color={color} />
             // <LedIcon color={"#000000"} size={24} />
@@ -118,7 +148,8 @@ export default function TabLayout() {
             <SettingsIcon size={28} color={color} strokeWidth={2} />
             // <LedIcon color={"#000000"} size={24} />
           ),
-          headerRight: () => renderHeaderRight(settingsLoading, handleSettingsSave),
+          headerRight: () =>
+            renderHeaderRight(settingsLoading, handleSettingsSave),
         }}
       />
 
@@ -135,7 +166,7 @@ export default function TabLayout() {
       {/*    ),*/}
       {/*  }}*/}
       {/*/>*/}
-      <Tabs.Screen name="index" options={{ href: null }} />
+      <Tabs.Screen name="index_template" options={{ href: null }} />
     </Tabs>
   );
 }

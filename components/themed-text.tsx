@@ -1,21 +1,30 @@
 import { Text, type TextProps } from "react-native";
 
 export type ThemedTextProps = TextProps & {
-  type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
+  type?:
+    | "default"
+    | "title"
+    | "defaultSemiBold"
+    | "subtitle"
+    | "link"
+    | "secondary";
 };
 
 export function ThemedText({
-  type = "default",
+  type,
   className = "",
   ...props
 }: ThemedTextProps) {
   let typeClass = "";
 
   switch (type) {
-    case "title":
+    /*     case "title":
       typeClass = "text-3xl font-bold leading-8";
+      break; */
+    case "secondary":
+      typeClass = "text-neutral-700 dark:text-neutral-300";
       break;
-    case "defaultSemiBold":
+    /*     case "defaultSemiBold":
       typeClass = "text-base font-semibold leading-6";
       break;
     case "subtitle":
@@ -23,15 +32,10 @@ export function ThemedText({
       break;
     case "link":
       typeClass = "text-base leading-[30px] text-sky-600";
-      break;
+      break; */
     default:
-      typeClass = "text-base leading-6";
+      typeClass = "text-neutral-800 dark:text-neutral-200";
   }
 
-  return (
-    <Text
-      {...props}
-      className={`text-black dark:text-white ${typeClass} ${className}`}
-    />
-  );
+  return <Text {...props} className={`${typeClass} ${className}`} />;
 }

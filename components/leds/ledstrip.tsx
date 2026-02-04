@@ -1,30 +1,10 @@
-import { Pressable, Switch, Text, View } from "react-native";
-import { TypeLedStrip } from "@/types/types";
-import { useLedStripsStore } from "@/hooks/use-ledstrips";
-import { useCallback } from "react";
-import Svg, { Path } from "react-native-svg";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useLedStripsStore } from "@/hooks/use-ledstrips";
+import { TypeLedStrip } from "@/types/types";
 import { router } from "expo-router";
-import { Link } from "expo-router";
-
-const SettingsIcon = ({ size = 24, color = "#FFFFFF" }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path
-      d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
-      stroke={color}
-      strokeWidth="1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <Path
-      d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
-      stroke={color}
-      strokeWidth="1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </Svg>
-);
+import { useCallback } from "react";
+import { Pressable, Switch, Text, View } from "react-native";
+import { SettingsIcon } from "../icons/settings-icon";
 
 export type LedStripProps = {
   ledStrip: TypeLedStrip;
@@ -44,15 +24,17 @@ export function LedStrip({ ledStrip, selected }: LedStripProps) {
     [ledStrip, update],
   );
 
+  const goSettings = () => {
+    router.push({
+      pathname: "/ledstrip-settings",
+      params: { id: ledStrip.id },
+    });
+  };
+
   return (
     <Pressable
       onPress={() => setSelected(ledStrip)}
-      onLongPress={() =>
-        router.push({
-          pathname: "/ledstrip-settings",
-          params: { id: ledStrip.id },
-        })
-      }
+      onLongPress={goSettings}
       delayLongPress={300}
     >
       <View
@@ -61,11 +43,11 @@ export function LedStrip({ ledStrip, selected }: LedStripProps) {
         {/* Név + pin */}
         <View className="flex flex-row gap-4 items-center">
           <Text
-            className={`text-neutral-800 dark:text-neutral-200 text-lg ${selected ? "font-bold" : ""} ${ledStrip.power ? "" : "line-through"}`}
+            className={`text-neutral-700 dark:text-neutral-200 text-lg ${selected ? "font-bold" : ""} ${ledStrip.power ? "" : "line-through"}`}
           >
             {ledStrip.name}
           </Text>
-          <Text className="text-neutral-800 dark:text-neutral-300 text-md">
+          <Text className="text-neutral-700 dark:text-neutral-300 text-md">
             p{ledStrip.pin}
           </Text>
         </View>
@@ -73,15 +55,7 @@ export function LedStrip({ ledStrip, selected }: LedStripProps) {
         <View className="flex-row items-center">
           {/* Settings icon*/}
           <View className="items-center justify-center mr-4">
-            <Pressable
-              onPress={() =>
-                router.push({
-                  pathname: "/ledstrip-settings",
-                  params: { id: ledStrip.id },
-                })
-              }
-              className="rounded"
-            >
+            <Pressable onPress={goSettings} className="rounded">
               {/*<Text className="text-3xl">⚙️</Text>*/}
               <SettingsIcon
                 size={28}

@@ -1,6 +1,6 @@
-import { create } from "zustand";
 import { getLedStrips, updateLedStrips } from "@/api/ledstrips/ledstrips";
 import { TypeLedStrip } from "@/types/types";
+import { create } from "zustand";
 
 type LedStripsState = {
   data: TypeLedStrip[];
@@ -14,7 +14,7 @@ type LedStripsState = {
   // Szerverre küldés a kiválasztott szalag helyi állapotával
   save: () => Promise<void>;
   delete: (id: number) => void;
-  add: (newStrip: Omit<TypeLedStrip, 'id'>) => void; // Új LED szalag hozzáadása
+  add: (newStrip: Omit<TypeLedStrip, "id">) => void; // Új LED szalag hozzáadása
   setSelected: (strip: TypeLedStrip | null) => void;
 };
 
@@ -49,18 +49,16 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
     }
 
     set((state) => {
-      // Frissíti a data tömbben a megfelelő szalagot
       const newData = state.data.map((strip) =>
         strip.id === payload.id ? { ...strip, ...payload } : strip,
       );
 
-      // Ha a selected szalagot frissítjük, azt is frissítjük
-      // const newSelected =
-      //   state.selected?.id === payload.id
-      //     ? { ...state.selected, ...payload }
-      //     : state.selected;
+      const newSelected =
+        state.selected?.id === payload.id
+          ? { ...state.selected, ...payload }
+          : state.selected;
 
-      return { data: newData /*selected: newSelected*/ };
+      return { data: newData, selected: newSelected };
     });
   },
 
@@ -76,16 +74,16 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
       await updateLedStrips(data);
 
       // Frissítsük az adatokat a szerverről (konzisztencia)
-      const refreshedData = await getLedStrips();
+      // const refreshedData = await getLedStrips();
 
       // Frissítsük a selected állapotot is
       set((state) => ({
-        data: refreshedData,
-        selected: state.selected
-          ? refreshedData.find(
-              (s: TypeLedStrip) => s.id === state.selected!.id,
-            ) || null
-          : refreshedData[0] || null,
+        // data: refreshedData,
+        // selected: state.selected
+        //   ? refreshedData.find(
+        //       (s: TypeLedStrip) => s.id === state.selected!.id,
+        //     ) || null
+        //   : refreshedData[0] || null,
         loading: false,
       }));
     } catch (e) {

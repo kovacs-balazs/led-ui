@@ -1,5 +1,11 @@
+import {
+  KobaInputBox,
+  KobaInputBoxRef,
+} from "@/components/kobalib/koba-inputbox";
+import KobaNumberInputBox from "@/components/kobalib/koba-number-inputbox";
+import { ThemedView } from "@/components/themed-view";
+import { useLedStripsStore } from "@/hooks/use-ledstrips";
 import { TypeLedStrip } from "@/types/types";
-import { Alert, Keyboard, Platform, Pressable, Text, View } from "react-native";
 import {
   router,
   Stack,
@@ -7,14 +13,8 @@ import {
   useLocalSearchParams,
   useNavigation,
 } from "expo-router";
-import { useLedStripsStore } from "@/hooks/use-ledstrips";
-import {
-  KobaInputBox,
-  KobaInputBoxRef,
-} from "@/components/kobalib/koba-inputbox";
 import { useCallback, useRef, useState } from "react";
-import KobaNumberInputBox from "@/components/kobalib/koba-number-inputbox";
-import { ThemedView } from "@/components/themed-view";
+import { Alert, Keyboard, Platform, Pressable, Text, View } from "react-native";
 
 export default function LedStripSettings() {
   const { id } = useLocalSearchParams<{ id: any }>();
@@ -79,7 +79,7 @@ export default function LedStripSettings() {
         options={{
           title: ledStrip ? ledStrip.name : "LED Settings",
           headerBackVisible: Platform.OS !== "ios",
-          headerTitleStyle: { fontSize: 20 }
+          headerTitleStyle: { fontSize: 20 },
           // headerLeft: () =>
           //   Platform.OS === "ios" ? (
           //     <Pressable onPress={() => router.back()} className="px-4">
@@ -91,7 +91,7 @@ export default function LedStripSettings() {
 
       <ThemedView className="flex-1">
         <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-          <View className="flex-1 p-10 justify-between">
+          <View className="flex-1 p-4 justify-between">
             {/* Felső gombok */}
             <View className="flex gap-6">
               <KobaInputBox
@@ -117,7 +117,7 @@ export default function LedStripSettings() {
             </View>
 
             {/* Alsó rész */}
-            <View className="mb-4">
+            <View className="mb-8">
               <Pressable onLongPress={handleDelete} delayLongPress={1000}>
                 {({ pressed }) => {
                   return (

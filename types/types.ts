@@ -16,7 +16,7 @@ export interface RGBColor {
 
 export interface GradientStop {
   position: number; // 0–100
-  color: string;    // hex color like "#FF0000"
+  color: string; // hex color like "#FF0000"
 }
 
 export type Gradient = GradientStop[];
@@ -28,7 +28,13 @@ export interface TypeLedStrip {
   ledCount: number;
   power: boolean;
   animation: number;
-  animations: Animation[];
+  animations: BaseAnimation[];
+}
+
+export interface AnimationConfig {
+  id: number;
+  name: string;
+  route: string;
 }
 
 export type BaseAnimation = {
@@ -50,5 +56,3 @@ export interface WaveColors {
   foreground: Gradient;
   background: Gradient;
 }
-
-export type Animation = SolidAnimation | WaveAnimation;

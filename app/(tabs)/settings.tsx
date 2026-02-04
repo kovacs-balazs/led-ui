@@ -1,11 +1,11 @@
-import { ThemedView } from "@/components/themed-view";
-import { Keyboard, Pressable, Text, View } from "react-native";
 import {
   KobaInputBox,
   KobaInputBoxRef,
 } from "@/components/kobalib/koba-inputbox";
-import { useRef, useState } from "react";
+import { ThemedView } from "@/components/themed-view";
 import { useSettingsStore } from "@/hooks/use-settings";
+import { useRef, useState } from "react";
+import { Keyboard, Pressable, View } from "react-native";
 
 /*
 wifi név, jelszo
@@ -44,6 +44,12 @@ export default function SettingsScreen() {
       return;
     }
 
+    if (password.length < 8) {
+      wifiPasswordInputRef.current?.setValue(data.wifi.password);
+      setWifiPasswordInputError("A jelszó minimum 8 karakter kell legyen!");
+      return;
+    }
+
     updateWiFi({ password: password });
     setWifiPasswordInputError("");
   };
@@ -56,7 +62,6 @@ export default function SettingsScreen() {
     }
 
     update({ bluetoothName: name });
-    console.log(data.bluetoothName);
     setBluetoothNameInputError("");
   };
 

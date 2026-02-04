@@ -12,6 +12,8 @@ import { View } from "react-native"; // Add this import
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 import "../global.css";
+import Toast from "react-native-toast-message";
+import { ThemedToast } from "@/components/kobalib/koba-toast";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -32,6 +34,11 @@ export default function RootLayout() {
             options={{ presentation: "modal", title: "Modal", }}
           />
         </Stack>
+        <Toast config={{
+          success: (props) => <ThemedToast {...props} type="success" />,
+          error: (props) => <ThemedToast {...props} type="error" />,
+          info: (props) => <ThemedToast {...props} type="info" />,
+        }} />
         <StatusBar
           style={colorScheme === "dark" ? "light" : "dark"}
           backgroundColor="transparent"

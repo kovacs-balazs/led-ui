@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { Settings } from "@/types/types";
 import { getSettings, updateSettings } from "@/api/settings/settings";
+import { Settings } from "@/types/types";
+import { create } from "zustand";
 
 type SettingsState = {
   data: Settings;
@@ -15,7 +15,7 @@ type SettingsState = {
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
   data: {
-    wifi: { name: "Roxy-AP", password: "0000" },
+    wifi: { name: "Roxy-AP", password: "12345678" },
     bluetoothName: "Betti-BT",
   },
   loading: false,
