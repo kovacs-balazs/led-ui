@@ -4,7 +4,14 @@ import { getAnimationById } from "@/config/animations";
 import { AnimationConfig } from "@/types/types";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { ReactNode, useEffect } from "react";
-import { Keyboard, Platform, Pressable, Text } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+} from "react-native";
 import Toast from "react-native-toast-message";
 
 interface AnimationWrapperProps {
@@ -56,9 +63,16 @@ export default function AnimationWrapper({ children }: AnimationWrapperProps) {
       />
 
       <ThemedView className="flex-1">
-        <Pressable onPress={Keyboard.dismiss} className="p-4">
-          {children(animation)}
-        </Pressable>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          className="flex-1"
+        >
+          <ScrollView>
+            <Pressable onPress={Keyboard.dismiss} className="p-4">
+              {children(animation)}
+            </Pressable>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </ThemedView>
     </>
   );

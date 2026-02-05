@@ -1,6 +1,10 @@
 // Segédfüggvény az új név generálásához
 import { TypeLedStrip } from "@/types/types";
 
+export function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
 export const generateUniqueName = (
   data: TypeLedStrip[],
   baseName: string = "New Strip",

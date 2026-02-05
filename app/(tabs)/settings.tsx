@@ -2,6 +2,7 @@ import {
   KobaInputBox,
   KobaInputBoxRef,
 } from "@/components/kobalib/koba-inputbox";
+import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useSettingsStore } from "@/hooks/use-settings";
 import { useRef, useState } from "react";
@@ -13,7 +14,7 @@ Bluetooth name
  */
 
 export default function SettingsScreen() {
-  const { data, update, updateWiFi } = useSettingsStore();
+  const { data, update, updateWiFi, loading } = useSettingsStore();
 
   const wifiNameInputRef = useRef<KobaInputBoxRef>(null);
   const [wifiNameInputError, setWifiNameInputError] = useState<string>();
@@ -64,6 +65,14 @@ export default function SettingsScreen() {
     update({ bluetoothName: name });
     setBluetoothNameInputError("");
   };
+
+  if (loading) {
+    return (
+      <ThemedView className="flex-1 justify-center items-center">
+        <ThemedText>Loading...</ThemedText>
+      </ThemedView>
+    );
+  }
 
   return (
     <ThemedView className="flex-1">

@@ -1,14 +1,13 @@
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
 import "../../global.css";
 
 export default function HomeScreen() {
   const router = useRouter();
-
+  /* 
   useEffect(() => {
     // ✅ Replace current route (user can't go back to home)
-    router.replace("/leds");
-  }, [router]);
+    router.replace("/index");
+  }, [router]); */
 
   return null; // Render nothing during redirect
 }

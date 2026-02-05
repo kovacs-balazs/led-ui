@@ -1,8 +1,9 @@
-import { ThemedText } from "@/components/themed-text";
 import { Colord, colord } from "colord";
 import { LinearGradient } from "expo-linear-gradient";
 import { memo, useEffect, useRef, useState } from "react";
 import { Keyboard, PanResponder, StyleSheet, View } from "react-native";
+import { KobaSlider } from "../koba-slider";
+import { KobaColorInputs } from "./koba-color-inputs";
 
 interface InputProps {
   initialColor?: string;
@@ -16,24 +17,36 @@ function RealKobaColorPicker({
   onColorChangeComplete,
 }: InputProps) {
   const initialColord = colord(initialColor);
+  const initialHsv = initialColord.toHsv();
+  // A hue értéket külön állapotban tároljuk, hogy ne vesszen el
+  const [hsvState, setHsvState] = useState({
+    h: initialHsv.h,
+    s: initialHsv.s,
+    v: initialHsv.v,
+    a: initialHsv.a,
+  });
+
   const [color, setColor] = useState(() => initialColord);
-  const [hexInput, setHexInput] = useState(() =>
-    colord(initialColor).toHex().replace("#", "").toUpperCase(),
-  );
 
   useEffect(() => {
     onColorChange(color.toHex());
   }, [color, onColorChange]);
 
   const colorRef = useRef<Colord>(initialColord);
+  const hsvRef = useRef(hsvState);
+
   useEffect(() => {
     colorRef.current = color;
   }, [color]);
 
+  useEffect(() => {
+    hsvRef.current = hsvState;
+  }, [hsvState]);
+
   const [renderKey, setRenderKey] = useState(0); // Erőltetett újrarajzolás
 
   // NAGY TÉGLALAP KOCKA
-  const [svSize, setSvSize] = useState({ width: 0, height: 240 });
+  /* const [svSize, setSvSize] = useState({ width: 0, height: 240 }); */
   const svSizeRef = useRef({ width: 0, height: 0 });
   const svRef = useRef<View>(null);
 
@@ -42,13 +55,25 @@ function RealKobaColorPicker({
     const x = Math.max(0, Math.min(width, evt.nativeEvent.locationX));
     const y = Math.max(0, Math.min(height, evt.nativeEvent.locationY));
 
+    const s = (x / width) * 100;
+    const v = (1 - y / height) * 100;
+    const newHsv = {
+      h: hsvRef.current.h,
+      s: s,
+      v: v,
+      a: hsvRef.current.a,
+    };
+
     const newColor = colord({
-      h: colorRef.current.hue(),
-      s: (x / width) * 100,
-      v: (1 - y / height) * 100,
-      a: colorRef.current.alpha(),
+      h: newHsv.h,
+      s: newHsv.s,
+      v: newHsv.v,
+      a: newHsv.a,
     });
+
+    setHsvState(newHsv);
     setColor(newColor);
+
     if (complete) onColorChangeComplete?.(newColor.toHex());
   };
 
@@ -75,16 +100,25 @@ function RealKobaColorPicker({
     const x = Math.max(0, Math.min(width, evt.nativeEvent.locationX));
     const newHue = (x / width) * 360;
 
-    const { s, v } = colorRef.current.toHsv(); // get current S/V
-    const newColor = colord({
+    const newHsv = {
       h: newHue,
-      s: s,
-      v: v,
-      a: color.alpha(),
+      s: hsvRef.current.s,
+      v: hsvRef.current.v,
+      a: hsvRef.current.a,
+    };
+
+    /* const { s, v } = colorRef.current.toHsv(); // get current S/V */
+    const newColor = colord({
+      h: newHsv.h,
+      s: newHsv.s,
+      v: newHsv.v,
+      a: newHsv.a,
     });
 
+    setHsvState(newHsv);
     setColor(newColor);
-    onColorChangeComplete?.(newColor.toHex());
+
+    if (complete) onColorChangeComplete?.(newColor.toHex());
   };
 
   const huePanResponder = useRef(
@@ -99,23 +133,80 @@ function RealKobaColorPicker({
     }),
   ).current;
 
+  const handleAlphaChange = (e) => {
+    const clamped = e / 100.0;
+    const newHsv = {
+      h: hsvRef.current.h,
+      s: hsvRef.current.s,
+      v: hsvRef.current.v,
+      a: clamped,
+    };
+
+    const newColor = colord({
+      h: newHsv.h,
+      s: newHsv.s,
+      v: newHsv.v,
+      a: clamped,
+    });
+
+    setHsvState(newHsv);
+    setColor(newColor);
+  };
+
+  const handleInputChange = (channel: string, value: any) => {
+    const { r, g, b } = color.toRgb();
+    let newColor = null;
+    switch (channel) {
+      case "r":
+        newColor = colord({
+          r: value,
+          g: g,
+          b: b,
+          a: hsvRef.current.a,
+        });
+        break;
+      case "g":
+        newColor = colord({
+          r: r,
+          g: value,
+          b: b,
+          a: hsvRef.current.a,
+        });
+        break;
+      case "b":
+        newColor = colord({
+          r: r,
+          g: g,
+          b: value,
+          a: hsvRef.current.a,
+        });
+        break;
+      case "hex":
+        newColor = colord(value).alpha(hsvRef.current.a);
+        break;
+    }
+
+    if (newColor !== null) {
+      setHsvState(newColor.toHsv());
+      setColor(newColor);
+      onColorChangeComplete?.(newColor.toHex());
+    }
+  };
+
   const rgb = color.toRgb();
   const hexDisplay = color.toHex().toUpperCase();
 
   const handleLayoutSv = (e: any) => {
-    const layout = e.nativeEvent.layout;
-    svSizeRef.current = layout;
-    setSvSize(layout);
+    svSizeRef.current = e.nativeEvent.layout;
     setRenderKey((prev) => prev + 1);
   };
 
   const handleLayoutHue = (e: any) => {
-    const layout = e.nativeEvent.layout;
-    hueWidthRef.current = layout.width;
+    hueWidthRef.current = e.nativeEvent.layout.width;
     setRenderKey((prev) => prev + 1);
   };
 
-  const hsv = color.toHsv();
+  const hsv = hsvState; // color.toHsv();
   const svX = (hsv.s / 100) * svSizeRef.current.width;
   const svY = (1 - hsv.v / 100) * svSizeRef.current.height; // Inverted (top=white, bottom=black)
 
@@ -192,6 +283,7 @@ function RealKobaColorPicker({
           end={{ x: 1, y: 0 }} // jobb
           style={{ flex: 1 }}
         />
+        {/* HUE SLIDER THUMB */}
         <View
           style={{
             position: "absolute",
@@ -204,9 +296,16 @@ function RealKobaColorPicker({
           }}
         />
       </View>
-      <ThemedText className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-        Drag to adjust saturation & brightness
-      </ThemedText>
+      {/* Alpha slider */}
+      <View className="mb-3">
+        <KobaSlider
+          value={Math.round(hsv.a * 100)}
+          onValueChange={handleAlphaChange}
+        />
+      </View>
+      <View>
+        <KobaColorInputs color={color} onSubmit={handleInputChange} />
+      </View>
     </View>
   );
 }

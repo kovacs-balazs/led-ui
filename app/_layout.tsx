@@ -1,4 +1,3 @@
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,14 +5,14 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
 import { View } from "react-native"; // Add this import
+import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
-import "../global.css";
-import Toast from "react-native-toast-message";
 import { ThemedToast } from "@/components/kobalib/koba-toast";
+import Toast from "react-native-toast-message";
+import "../global.css";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -31,14 +30,16 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="modal"
-            options={{ presentation: "modal", title: "Modal", }}
+            options={{ presentation: "modal", title: "Modal" }}
           />
         </Stack>
-        <Toast config={{
-          success: (props) => <ThemedToast {...props} type="success" />,
-          error: (props) => <ThemedToast {...props} type="error" />,
-          info: (props) => <ThemedToast {...props} type="info" />,
-        }} />
+        <Toast
+          config={{
+            success: (props) => <ThemedToast {...props} type="success" />,
+            error: (props) => <ThemedToast {...props} type="error" />,
+            info: (props) => <ThemedToast {...props} type="info" />,
+          }}
+        />
         <StatusBar
           style={colorScheme === "dark" ? "light" : "dark"}
           backgroundColor="transparent"

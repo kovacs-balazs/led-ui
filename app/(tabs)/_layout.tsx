@@ -11,7 +11,13 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useLedStripsStore } from "@/hooks/use-ledstrips";
 import { useSettingsStore } from "@/hooks/use-settings";
 import { Header } from "@react-navigation/elements";
-import { ActivityIndicator, Pressable } from "react-native";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function TabLayout() {
@@ -129,6 +135,7 @@ export default function TabLayout() {
           headerRight: () => renderHeaderRight(loading, handleSave),
         }}
       />
+      
       <Tabs.Screen
         name="animations"
         options={{

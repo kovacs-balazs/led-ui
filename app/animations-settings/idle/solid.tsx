@@ -33,13 +33,17 @@ export default function SolidAnimationSettings() {
 
           update({ id: selected.id, animations: newAnimations });
         };
+
         return (
-          <View>
-            <KobaColorPicker
-              initialColor="#F0A580"
-              onColorChange={(e) => {}}
-              onColorChangeComplete={(e) => {}}
-            />
+          <View className="">
+            <View className="p-4">
+              {/* Padding 4, hogy beljebb legyen, hogy kézzel könnyen határértékig el lehessen húzni a dolgokat */}
+              <KobaColorPicker
+                initialColor="#F0A580"
+                onColorChange={(e) => {}}
+                onColorChangeComplete={(e) => {}}
+              />
+            </View>
           </View>
         );
       }}
