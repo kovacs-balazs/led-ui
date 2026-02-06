@@ -1,12 +1,13 @@
 import { ThemedView } from "@/components/themed-view";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
+import { getNewLedStrip } from "@/api/ledstrips/ledstrips";
 import { LedStrip } from "@/components/leds/ledstrip";
 import { useLedStripsStore } from "@/hooks/use-ledstrips";
 import { useSettingsStore } from "@/hooks/use-settings";
-import { useEffect } from "react";
+import { generateUniqueName } from "@/utils/utils";
+import { useCallback, useEffect } from "react";
 import "../../global.css";
-import { generateUniqueName } from "../../utils/utils";
 
 /*
 // Mentés gombra kattintva
@@ -31,6 +32,13 @@ export default function HomeScreen() {
     console.log("Fetched ledstrips and settings");
   }, [fetchLedStrips, fetchSettings]);
 
+  const handleAdd = useCallback(async () => {
+    const newLedStrip = await getNewLedStrip(generateUniqueName(data));
+    add(newLedStrip);
+
+    console.log("Added ledstrip", newLedStrip);
+  }, [data, add]);
+
   // Show loading indicator while fetching
   if (loading && data.length === 0) {
     return (
@@ -51,17 +59,6 @@ export default function HomeScreen() {
       </ThemedView>
     );
   }
-
-  const handleAdd = () => {
-    add({
-      name: generateUniqueName(data),
-      pin: 0,
-      ledCount: 50,
-      power: false,
-      animation: 0,
-      animations: [],
-    });
-  };
 
   return (
     <ThemedView className="flex-1 justify-between">

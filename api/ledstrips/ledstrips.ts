@@ -43,3 +43,27 @@ export async function updateLedStrips(payload: unknown) {
     };
   }
 }
+
+export async function getNewLedStrip(name: string) {
+  try {
+    const response = await fetch(
+      `${BACKEND_BASE_URL}/api/ledstrips/new?name=${encodeURIComponent(name)}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch led strips: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn("Warning: Failed to fetch LED strips from backend:", error);
+    // Return mock/default data when backend is unavailable
+    return {};
+  }
+}

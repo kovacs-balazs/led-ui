@@ -43,6 +43,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "statusBar": {
+      "style": "auto",
+      "translucent": true,
+      "backgroundColor": "#00000000"
     }
   }
 }

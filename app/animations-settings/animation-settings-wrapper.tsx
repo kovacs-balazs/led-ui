@@ -21,7 +21,6 @@ interface AnimationWrapperProps {
 export default function AnimationWrapper({ children }: AnimationWrapperProps) {
   const { id } = useLocalSearchParams<{ id: string }>();
   const animationId = Number(id);
-  console.log("Searcing animation by id", animationId);
   const animation: AnimationConfig | undefined = getAnimationById(animationId);
 
   useEffect(() => {

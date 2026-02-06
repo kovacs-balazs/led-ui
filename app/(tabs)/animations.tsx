@@ -10,7 +10,7 @@ export default function AnimationsScreen() {
   const [selectedType, setSelectedType] = useState(0); // 0 = idle, 1 = audio
 
   const { selected } = useLedStripsStore();
-  
+
   return (
     <ThemedView className="flex-1">
       <View className="p-4 flex-row gap-4">
