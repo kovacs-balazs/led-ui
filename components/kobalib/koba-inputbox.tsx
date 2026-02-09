@@ -1,5 +1,5 @@
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { Text, TextInput, View } from "react-native";
-import { useState, forwardRef, useImperativeHandle } from "react";
 
 interface InputProps {
   label: string;
@@ -46,9 +46,9 @@ export const KobaInputBox = forwardRef<KobaInputBoxRef, InputProps>(
           onBlur={() => setFocused(false)}
           style={{ fontSize: 16 }}
           returnKeyType="done"
-          onSubmitEditing={() => {
+          /* onSubmitEditing={() => {
             onSubmit(text);
-          }}
+          }} */
           onEndEditing={() => onSubmit(text)}
         />
         {/* Error message */}

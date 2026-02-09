@@ -40,7 +40,7 @@ export function Animation({ animation, selected }: AnimationProps) {
       delayLongPress={300}
     >
       <View
-        className={`p-3 rounded-xl ${selected ? "bg-gray-400" : "bg-neutral-300"} ${selected ? "dark:bg-gray-600" : "dark:bg-gray-800"} flex-row justify-between items-center`}
+        className={`p-3 rounded-xl ${selected ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-300 dark:bg-gray-800"} flex-row justify-between items-center`}
       >
         <Text
           className={`flex items-center text-neutral-700 dark:text-neutral-200 text-lg ${selected ? "font-bold" : ""}`}

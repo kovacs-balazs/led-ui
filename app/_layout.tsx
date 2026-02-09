@@ -11,6 +11,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { ThemedToast } from "@/components/kobalib/koba-toast";
 import { useConnection } from "@/hooks/use-connection";
 import { StatusBar } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import "../global.css";
 import LoadingScreen from "./loading";
@@ -54,30 +55,32 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={theme}>
-      <Stack
-        screenOptions={{
-          headerShown: true,
-          contentStyle: { backgroundColor: theme.colors.background },
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
+      <GestureHandlerRootView>
+        <Stack
+          screenOptions={{
+            headerShown: true,
+            contentStyle: { backgroundColor: theme.colors.background },
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: "modal", title: "Modal" }}
+          />
+        </Stack>
+        <Toast
+          config={{
+            success: (props) => <ThemedToast {...props} type="success" />,
+            error: (props) => <ThemedToast {...props} type="error" />,
+            info: (props) => <ThemedToast {...props} type="info" />,
+          }}
         />
-      </Stack>
-      <Toast
-        config={{
-          success: (props) => <ThemedToast {...props} type="success" />,
-          error: (props) => <ThemedToast {...props} type="error" />,
-          info: (props) => <ThemedToast {...props} type="info" />,
-        }}
-      />
-      <StatusBar
-        style={colorScheme === "dark" ? "light" : "dark"}
-        backgroundColor="transparent"
-        translucent
-      />
+        <StatusBar
+          style={colorScheme === "dark" ? "light" : "dark"}
+          backgroundColor="transparent"
+          translucent
+        />
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }

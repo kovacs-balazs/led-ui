@@ -4,14 +4,8 @@ import { getAnimationById } from "@/config/animations";
 import { AnimationConfig } from "@/types/types";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { ReactNode, useEffect } from "react";
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-} from "react-native";
+import { Keyboard, Platform, Pressable, Text } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
 
 interface AnimationWrapperProps {
@@ -39,9 +33,16 @@ export default function AnimationWrapper({ children }: AnimationWrapperProps) {
 
   if (!animation) {
     return (
-      <Text className="text-neutral-800 dark:text-neutral-200">
-        Animation not found.
-      </Text>
+      <ThemedView className="flex-1 justify-center items-center">
+        <Pressable
+          onPress={router.back}
+          className="px-4 py-2 bg-red-100 dark:bg-red-900 rounded"
+        >
+          <Text className="text-red-700 dark:text-red-300">
+            Animation not found. Tap to go back.
+          </Text>
+        </Pressable>
+      </ThemedView>
     );
   }
 
@@ -61,17 +62,13 @@ export default function AnimationWrapper({ children }: AnimationWrapperProps) {
         }}
       />
 
+      {/* Itt 8 a padding, mert az animációknál mindig lesz color picker, és beljebb kell húzni a colorpickert, hogy a széléig könnyen ki lehessen húzni a dolgokat */}
       <ThemedView className="flex-1">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          className="flex-1"
-        >
-          <ScrollView>
-            <Pressable onPress={Keyboard.dismiss} className="p-4">
-              {children(animation)}
-            </Pressable>
-          </ScrollView>
-        </KeyboardAvoidingView>
+        <KeyboardAwareScrollView>
+          <Pressable className="p-4" onPress={Keyboard.dismiss}>
+            {children(animation)}
+          </Pressable>
+        </KeyboardAwareScrollView>
       </ThemedView>
     </>
   );

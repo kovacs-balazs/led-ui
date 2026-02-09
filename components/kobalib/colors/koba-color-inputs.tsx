@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { clamp } from "@/utils/utils";
 import { Colord } from "colord";
 import { useEffect, useState } from "react";
-import { TextInput, View } from "react-native";
+import { Platform, TextInput, View } from "react-native";
 
 function LabelledInputBox({
   label,
@@ -47,12 +47,12 @@ function LabelledInputBox({
 
   return (
     <View
-      className={`flex flex-row py-1 w-20 rounded-xl items-center border ${focused ? "border-blue-400" : "border-neutral-600"}`}
+      className={`flex flex-row w-20 rounded-xl items-center border ${focused ? "border-blue-400" : "border-neutral-600"}`}
+      style={Platform.OS === "android" ? { paddingVertical: 2 } : undefined}
     >
       <ThemedText className="text-lg ml-2">{label}</ThemedText>
       <TextInput
-        className={`
-          rounded-md text-neutral-800 dark:text-neutral-200 text-center w-14`}
+        className={`rounded-md text-neutral-800 dark:text-neutral-200 text-center w-14`}
         value={inputValue}
         keyboardType="numeric"
         onFocus={() => setFocused(true)}

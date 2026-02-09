@@ -38,7 +38,7 @@ export function LedStrip({ ledStrip, selected }: LedStripProps) {
       delayLongPress={300}
     >
       <View
-        className={`p-3 rounded-xl ${selected ? "bg-gray-400" : "bg-neutral-300"} ${selected ? "dark:bg-gray-600" : "dark:bg-gray-800"} flex-row justify-between items-center`}
+        className={`p-3 rounded-xl ${selected ? "bg-gray-400 dark:bg-blue-600" : "bg-neutral-300 dark:bg-gray-800"} flex-row justify-between items-center`}
       >
         {/* Név + pin */}
         <View className="flex flex-row gap-4 items-center">

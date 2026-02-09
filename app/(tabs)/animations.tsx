@@ -1,4 +1,5 @@
 import { Animation } from "@/components/animations/animation";
+import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { AUDIO_ANIMATIONS, IDLE_ANIMATIONS } from "@/config/animations";
 import { Colors } from "@/constants/theme";
@@ -20,7 +21,7 @@ export default function AnimationsScreen() {
           return (
             <Pressable
               key={index}
-              className={`flex-1 p-2 rounded-lg ${isActive ? "bg-gray-400" : "bg-neutral-300"} ${isActive ? "dark:bg-gray-600" : "dark:bg-gray-800"}`}
+              className={`flex-1 p-2 rounded-lg ${isActive ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-300 dark:bg-gray-800"}`}
               onPress={() => setSelectedType(index)}
             >
               <Text
@@ -55,9 +56,9 @@ export default function AnimationsScreen() {
           </View>
         </ScrollView>
       ) : (
-        <Text className="text-neutral-800 dark:text-neutral-200">
+        <ThemedText>
           No LED strip selected
-        </Text>
+        </ThemedText>
       )}
     </ThemedView>
   );

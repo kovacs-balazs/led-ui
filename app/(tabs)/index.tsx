@@ -79,7 +79,7 @@ export default function HomeScreen() {
         {({ pressed }) => {
           return (
             <View
-              className={`p-2.5 bg-cyan-600 rounded-xl ${pressed ? "scale-95" : "scale-100"}`}
+              className={`p-2.5 bg-blue-600 rounded-xl ${pressed ? "scale-95" : "scale-100"}`}
             >
               <Text className="text-xl text-neutral-200 font-bold text-center">
                 Add

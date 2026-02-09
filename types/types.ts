@@ -14,10 +14,11 @@ export interface RGBColor {
   b: number;
 }
 
-export interface GradientStop {
+export type GradientStop = {
+  id: number;
   position: number; // 0–100
   color: string; // hex color like "#FF0000"
-}
+};
 
 export type Gradient = GradientStop[];
 

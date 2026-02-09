@@ -47,9 +47,9 @@ export default function KobaNumberInputBox({
         onBlur={() => setFocused(false)}
         style={{ fontSize: 16 }}
         returnKeyType="done"
-        onSubmitEditing={() => {
+        /* onSubmitEditing={() => {
           onSubmit(parseInt(text, 10));
-        }}
+        }} */
         onEndEditing={() => onSubmit(parseInt(text, 10))}
       />
     </View>
