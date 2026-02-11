@@ -27,7 +27,9 @@ export default function KobaNumberInputBox({
 
     // clamp between min/max
     if (number < minValue) number = minValue;
-    if (maxValue) if (number > maxValue) number = maxValue;
+    if (maxValue !== undefined && number > maxValue) {
+      number = maxValue;
+    }
 
     setText(number.toString());
   };
@@ -44,13 +46,16 @@ export default function KobaNumberInputBox({
         value={text + ""}
         onChangeText={handleChange}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onBlur={() => {
+          setFocused(false)
+        }}
         style={{ fontSize: 16 }}
         returnKeyType="done"
         /* onSubmitEditing={() => {
-          onSubmit(parseInt(text, 10));
         }} */
-        onEndEditing={() => onSubmit(parseInt(text, 10))}
+        onEndEditing={() => {
+          onSubmit(parseInt(text, 10));
+        }}
       />
     </View>
   );

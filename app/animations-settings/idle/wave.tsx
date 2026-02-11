@@ -59,6 +59,51 @@ export default function WaveAnimationSettings() {
           update({ id: selected.id, animations: newAnimations });
         };
 
+        const handleTypeChange = (type: "solid" | "gradient") => {
+          const newAnimations = [...selected.animations];
+          const anim = newAnimations[animIndex];
+
+          newAnimations[animIndex] = {
+            ...anim,
+            colors: {
+              ...anim.colors,
+              foreground: {
+                ...anim.colors.foreground, // ✅ EZ
+                type: type,
+              },
+            },
+          };
+
+          update({ id: selected.id, animations: newAnimations });
+        };
+
+        const handleAnimationColorChange = (
+          channel: "solid" | "gradient",
+          colorData: string | GradientStop[]
+        ) => {
+          const key = channel === "solid" ? "color" : "colors";
+
+          const newAnimations = [...selected.animations];
+          const anim = newAnimations[animIndex];
+
+          newAnimations[animIndex] = {
+            ...anim,
+            colors: {
+              ...anim.colors,
+              foreground: {
+                ...anim.colors.foreground, // ✅ EZ
+                type: channel,
+                [key]: colorData,
+              },
+            },
+          };
+
+          update({ id: selected.id, animations: newAnimations });
+        };
+
+        const { solid, gradient } = { solid: currentAnim.colors.foreground.color, gradient: currentAnim.colors.foreground.colors }
+
+
         return (
           <View className="flex flex-col gap-4">
             <KobaNumberInputBox

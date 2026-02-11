@@ -3,7 +3,7 @@ import { useLedStripsStore } from "@/hooks/use-ledstrips";
 import { TypeLedStrip } from "@/types/types";
 import { router } from "expo-router";
 import { useCallback } from "react";
-import { Pressable, Switch, Text, View } from "react-native";
+import { Platform, Pressable, Switch, Text, View } from "react-native";
 import { SettingsIcon } from "../icons/settings-icon";
 
 export type LedStripProps = {
@@ -38,7 +38,7 @@ export function LedStrip({ ledStrip, selected }: LedStripProps) {
       delayLongPress={300}
     >
       <View
-        className={`p-3 rounded-xl ${selected ? "bg-gray-400 dark:bg-blue-600" : "bg-neutral-300 dark:bg-gray-800"} flex-row justify-between items-center`}
+        className={`p-3 rounded-xl ${selected ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-300 dark:bg-gray-800"} flex-row justify-between items-center`}
       >
         {/* Név + pin */}
         <View className="flex flex-row gap-4 items-center">
@@ -66,7 +66,15 @@ export function LedStrip({ ledStrip, selected }: LedStripProps) {
 
           {/* Power toggle*/}
           <View className="items-center justify-center h-2">
-            <Switch value={ledStrip.power} onValueChange={togglePower} />
+            <Switch
+              value={ledStrip.power}
+              onValueChange={togglePower}
+              trackColor={{
+                true: Platform.OS === 'android' ? "#5CE65C" : undefined,
+                false: "#808080"
+              }}
+              thumbColor={"#f4f4f4"}
+            />
           </View>
         </View>
       </View>

@@ -8,7 +8,7 @@ import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Keyboard, Pressable, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import KobaSlider from "../koba-slider";
+import KobaSlider from "../../koba-slider";
 import KobaColorPicker from "./koba-color-picker-component";
 
 extend([lchPlugin]);
@@ -60,9 +60,12 @@ function RealKobaGradientPicker({
     };
 
     const updatedStops = [...stops, newStop].sort((a, b) => a.position - b.position);
-    updateStops(updatedStops);
     // onChangeComplete(stops);
+    console.log("Miért nem selecteli ki? ", maxId, newStop.id)
     setSelectedStopId(newStop.id);
+    setStops(updatedStops);
+    //onChangeComplete?.(updatedStops);
+    //updateStops(updatedStops);
   }, [stops]);
 
   const removeStop = useCallback(
@@ -101,29 +104,20 @@ function RealKobaGradientPicker({
     }, [stops]);
 
 
-  const handleSliderChange = useCallback((stopId: number, e: number) => {
+  const handleSliderChange = useCallback((e: number) => {
+    if(!selectedStop) return;
     setStops(prev => {
       const newStops = prev
         .map(stop =>
-          stop.id === stopId
+          stop.id === selectedStop.id
             ? { ...stop, position: Math.round(e) }
             : stop
         )
         .sort((a, b) => a.position - b.position);
-
-
       return newStops;
     });
-    // onChangeComplete?.(stops);
-  }, []);
+  }, [selectedStop]);
 
-  const sliderOnChange = useCallback(
-    (e: number) => {
-      if (!selectedStop) return;
-      handleSliderChange(selectedStop.id, e);
-    },
-    [selectedStop?.id, handleSliderChange]
-  );
 
   const handleColorChange = useCallback((newColor: string) => {
     setStops(prev => {
@@ -193,7 +187,7 @@ function RealKobaGradientPicker({
         <View className="flex flex-col gap-4">
           <View className="flex flex-row gap-2">
             <View className="flex-1">
-              <KobaSlider initialValue={Math.round(selectedStop.position) ?? 0} onValueChange={sliderOnChange} onValueChangeComplete={() => onChangeComplete?.(stops)} />
+              <KobaSlider initialValue={Math.round(selectedStop.position) ?? 0} onValueChange={handleSliderChange} onValueChangeComplete={() => onChangeComplete?.(stops)} />
             </View>
             <View className="flex">
               <Pressable className="flex bg-red-500 h-10 w-10 rounded-full items-center justify-center" onPress={(e) => removeStop(selectedStop.id)}>

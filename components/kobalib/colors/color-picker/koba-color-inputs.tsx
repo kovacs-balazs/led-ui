@@ -1,8 +1,8 @@
 import { ThemedText } from "@/components/themed-text";
 import { clamp } from "@/utils/utils";
 import { Colord } from "colord";
-import { useEffect, useState } from "react";
-import { Platform, TextInput, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { TextInput, View } from "react-native";
 
 function LabelledInputBox({
   label,
@@ -45,14 +45,20 @@ function LabelledInputBox({
     onSubmit(channel, parseInt(numericValue));
   };
 
+  const selection = useMemo(() => {
+    return {
+      start: inputValue.length,
+      end: inputValue.length,
+    };
+  }, [inputValue.length]);
+
   return (
     <View
-      className={`flex flex-row w-20 rounded-xl items-center border ${focused ? "border-blue-400" : "border-neutral-600"}`}
-      style={Platform.OS === "android" ? { paddingVertical: 2 } : undefined}
+      className={`flex flex-row w-20 h-10 rounded-xl items-center border ${focused ? "border-blue-400" : "border-neutral-600"}`}
     >
       <ThemedText className="text-lg ml-2">{label}</ThemedText>
       <TextInput
-        className={`rounded-md text-neutral-800 dark:text-neutral-200 text-center w-14`}
+        className={`rounded-md text-neutral-800 dark:text-neutral-200 text-center w-14 h-full`}
         value={inputValue}
         keyboardType="numeric"
         onFocus={() => setFocused(true)}
@@ -60,7 +66,7 @@ function LabelledInputBox({
         onChangeText={handleChange}
         onSubmitEditing={handleSubmit}
         onEndEditing={handleSubmit}
-        selection={{ start: inputValue.length, end: inputValue.length }}
+        selection={selection}
         maxLength={3}
       />
     </View>
@@ -135,7 +141,7 @@ export function KobaColorInputs({ color, onSubmit }: KobaColorInputsProps) {
       <View>
         <TextInput
           className={`
-          rounded-lg text-neutral-800 dark:text-neutral-200 text-center w-24 p-2 border
+          rounded-lg text-neutral-800 dark:text-neutral-200 text-center w-24 p-2 border h-10
           ${hexFocused ? "border-blue-400" : "border-neutral-600"}`}
           value={hexInput}
           onChangeText={handleHexChange}

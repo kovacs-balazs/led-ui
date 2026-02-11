@@ -46,10 +46,12 @@ export const KobaInputBox = forwardRef<KobaInputBoxRef, InputProps>(
           onBlur={() => setFocused(false)}
           style={{ fontSize: 16 }}
           returnKeyType="done"
-          /* onSubmitEditing={() => {
+          //onSubmitEditing={() => {})
+            // onSubmit(text);}
+          onEndEditing={() => {
+            console.log("ASD3")
             onSubmit(text);
-          }} */
-          onEndEditing={() => onSubmit(text)}
+          }}
         />
         {/* Error message */}
         {error ? (

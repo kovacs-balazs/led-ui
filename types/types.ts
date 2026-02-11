@@ -20,6 +20,12 @@ export type GradientStop = {
   color: string; // hex color like "#FF0000"
 };
 
+export interface AnimationColorGroup {
+  type: string;
+  color: string;
+  colors: Gradient;
+}
+
 export type Gradient = GradientStop[];
 
 export interface TypeLedStrip {

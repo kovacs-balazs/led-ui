@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import KobaSlider from "../koba-slider";
+import KobaSlider from "../../koba-slider";
 import { KobaColorInputs } from "./koba-color-inputs";
 
 interface InputProps {
@@ -233,8 +233,11 @@ function RealKobaColorPicker({
 
   const hueX = (hsv.h / 360) * hueWidthRef.current;
 
-  // const renderCount = useRef(0);
-  // renderCount.current++;
+  const layoutReady = svSizeRef.current.width > 0;
+
+  const renderCount = useRef(0);
+  renderCount.current++;
+  // console.log("Render", renderCount, svX, svY, initialHsv)
 
   return (
     <View className="flex">
@@ -282,18 +285,21 @@ function RealKobaColorPicker({
           </View>
         </GestureDetector>
       </View>
-      <View
-        style={{
-          position: "absolute",
-          left: svX - 14,
-          top: svY - 14,
-          width: 28,
-          height: 28,
-          borderRadius: 14,
-          borderWidth: 3,
-          borderColor: "#fff",
-        }}
-      />
+      {/* THUMB */}
+      {layoutReady && (
+        <View
+          style={{
+            position: "absolute",
+            left: svX - 14,
+            top: svY - 14,
+            width: 28,
+            height: 28,
+            borderRadius: 14,
+            borderWidth: 3,
+            borderColor: "#fff",
+          }}
+        />
+      )}
 
       {/* Hue Slider */}
       <GestureDetector gesture={hueGesture}>

@@ -1,5 +1,5 @@
 import { GradientStop } from "@/types/types";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback } from "react";
 import { Pressable, Text, View } from "react-native";
 import KobaColorPicker from "./koba-color-picker-component";
 import KobaGradientPicker from "./koba-gradient-picker";
@@ -30,20 +30,27 @@ type KobaPickerProps = SolidColorProps | GradientProps
 
 
 function RealKobaPicker({ type, initialColor, initialStops, onColorTypeChange, onChangeComplete }: KobaPickerProps) {
-  const [pickerType, setPickerType] = useState<number>(type === 'solid' ? 0 : 1);
-
-  useEffect(() => {
-    setPickerType(type === 'solid' ? 0 : 1);
-  }, [type]);
+  const pickerType = type === 'solid' ? 0 : 1;
 
   const handleColorType = (idx: number) => {
-    setPickerType(idx);
     onColorTypeChange?.(idx === 0 ? 'solid' : 'gradient');
-  }
+  };
+
+  // const renderCount = useRef(0);
+  // renderCount.current++;
+  // console.log("Render", renderCount)
+
+  const handleComplete = useCallback((data: any) => {
+    if (pickerType === 0) {
+      onChangeComplete('solid', data);
+      return;
+    }
+    onChangeComplete('gradient', data);
+  }, [pickerType]);
 
   return (
-    <View className="bg-neutral-300 dark:bg-neutral-800 p-4 gap-6 rounded-xl">
-      <View className="flex flex-row gap-4 px-2">
+    <View className="gap-6">
+      <View className="flex flex-row gap-4">
         {["Solid", "Gradient"].map((type, idx) => {
           const isActive = pickerType === idx;
 
@@ -53,7 +60,7 @@ function RealKobaPicker({ type, initialColor, initialStops, onColorTypeChange, o
               className={`flex-1 p-2 rounded-lg ${isActive ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-400 dark:bg-neutral-600"}`}
               onPress={() => handleColorType(idx)}
             >
-              <Text className={`text-xl text-center text-neutral-800 ${isActive ? "font-bold dark:text-neutral-200" : " dark:text-neutral-300"}`}>
+              <Text className="text-xl text-center text-neutral-800 dark:text-neutral-200">
                 {type}
               </Text>
             </Pressable>
@@ -61,10 +68,10 @@ function RealKobaPicker({ type, initialColor, initialStops, onColorTypeChange, o
         })}
       </View>
 
-      {pickerType === 0 ? (
-        <KobaColorPicker initialColor={initialColor} onChangeComplete={(e) => onChangeComplete('solid', e)} />
+      {type === 'solid' ? (
+        <KobaColorPicker /* key={initialColor} */ initialColor={initialColor} onChangeComplete={handleComplete} />
       ) : (
-        <KobaGradientPicker initialStops={initialStops} onChangeComplete={(e) => onChangeComplete('gradient', e)} />
+        <KobaGradientPicker /* key={JSON.stringify(initialStops)} */ initialStops={initialStops} onChangeComplete={handleComplete} />
       )}
     </View>
   )

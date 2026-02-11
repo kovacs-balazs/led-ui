@@ -13,10 +13,8 @@ import { useSettingsStore } from "@/hooks/use-settings";
 import { Header } from "@react-navigation/elements";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
+  Keyboard,
+  Pressable
 } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -33,6 +31,7 @@ export default function TabLayout() {
 
   const handleSave = useCallback(async () => {
     try {
+      Keyboard.dismiss();
       await save();
       if (!error) {
         console.log("Saved successfully");
@@ -51,6 +50,7 @@ export default function TabLayout() {
 
   const handleSettingsSave = useCallback(async () => {
     try {
+      Keyboard.dismiss();
       if (settings.wifi.password.length < 8) {
         Toast.show({
           type: "error",
@@ -135,7 +135,7 @@ export default function TabLayout() {
           headerRight: () => renderHeaderRight(loading, handleSave),
         }}
       />
-      
+
       <Tabs.Screen
         name="animations"
         options={{
@@ -155,8 +155,9 @@ export default function TabLayout() {
             <SettingsIcon size={28} color={color} strokeWidth={2} />
             // <LedIcon color={"#000000"} size={24} />
           ),
-          headerRight: () =>
-            renderHeaderRight(settingsLoading, handleSettingsSave),
+          headerRight: () => {
+            return renderHeaderRight(settingsLoading, handleSettingsSave)
+          }
         }}
       />
 
