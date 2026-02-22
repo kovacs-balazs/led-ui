@@ -49,7 +49,6 @@ export const KobaInputBox = forwardRef<KobaInputBoxRef, InputProps>(
           //onSubmitEditing={() => {})
             // onSubmit(text);}
           onEndEditing={() => {
-            console.log("ASD3")
             onSubmit(text);
           }}
         />

@@ -13,7 +13,16 @@ export default function KobaSwitch({ label, value, onChange }: InputProps) {
         {label}
       </Text>
       <View className={`self-start ${Platform.OS === "ios" ? "mt-1" : ""}`}>
-        <Switch value={value} onValueChange={onChange} />
+        <Switch
+          value={value}
+          onValueChange={onChange}
+          thumbColor="#FFFFFF"
+          trackColor={{
+            false: "#3f3f46",   // dark gray off
+            true: "#22c55e",    // green on
+          }}
+          ios_backgroundColor="#3f3f46"
+        />
       </View>
     </View>
   );

@@ -1,7 +1,8 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import React, { useCallback } from "react";
 
 import { HapticTab } from "@/components/haptic-tab";
+import { ConsoleIcon } from "@/components/icons/console-icon";
 import { LedIcon } from "@/components/icons/led-icon";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { SettingsIcon } from "@/components/icons/settings-icon";
@@ -14,7 +15,8 @@ import { Header } from "@react-navigation/elements";
 import {
   ActivityIndicator,
   Keyboard,
-  Pressable
+  Pressable,
+  View
 } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -155,9 +157,24 @@ export default function TabLayout() {
             <SettingsIcon size={28} color={color} strokeWidth={2} />
             // <LedIcon color={"#000000"} size={24} />
           ),
-          headerRight: () => {
-            return renderHeaderRight(settingsLoading, handleSettingsSave)
-          }
+          headerRight: () => (
+            <View className="flex flex-row items-center gap-3">
+              <Pressable
+                className="p-4"
+                style={({ pressed }) => ({
+                  transform: [{ scale: pressed ? 0.8 : 1 }],
+                })}
+                accessibilityRole="button"
+                accessibilityLabel="Go to console screen"
+                onPress={() => {
+                  router.push("/console");
+                }}>
+                <ConsoleIcon color={Colors[colorScheme ?? "light"].tint} size={24} />
+              </Pressable>
+
+              {renderHeaderRight(settingsLoading, handleSettingsSave)}
+            </View>
+          )
         }}
       />
 

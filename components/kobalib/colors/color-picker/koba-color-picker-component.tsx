@@ -289,6 +289,7 @@ function RealKobaColorPicker({
       {layoutReady && (
         <View
           style={{
+            pointerEvents: "none", // ← EZ A KULCS!
             position: "absolute",
             left: svX - 14,
             top: svY - 14,
@@ -318,6 +319,7 @@ function RealKobaColorPicker({
           {/* HUE SLIDER THUMB */}
           <View
             style={{
+//              pointerEvents: "none", // ← EZ A KULCS!
               position: "absolute",
               left: hueX - 4,
               top: 4,

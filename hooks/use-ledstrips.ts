@@ -133,13 +133,14 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
 
       // Új LED szalag objektum
       const newStrip: TypeLedStrip = {
-        id: newId,
         ...newStripData,
+        id: newId,
       };
 
       // Adjuk hozzá az adatokhoz
       const newData = [...state.data, newStrip];
 
+      console.log(maxId, newId, newStrip);
       // Válasszuk ki az új szalagot
       return {
         data: newData,

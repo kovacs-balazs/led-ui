@@ -61,7 +61,7 @@ function RealKobaGradientPicker({
 
     const updatedStops = [...stops, newStop].sort((a, b) => a.position - b.position);
     // onChangeComplete(stops);
-    console.log("Miért nem selecteli ki? ", maxId, newStop.id)
+    //console.log("Miért nem selecteli ki? ", maxId, newStop.id)
     setSelectedStopId(newStop.id);
     setStops(updatedStops);
     //onChangeComplete?.(updatedStops);
@@ -104,8 +104,9 @@ function RealKobaGradientPicker({
     }, [stops]);
 
 
+  // POSITION SLIDER
   const handleSliderChange = useCallback((e: number) => {
-    if(!selectedStop) return;
+    if (!selectedStop) return;
     setStops(prev => {
       const newStops = prev
         .map(stop =>
@@ -118,41 +119,59 @@ function RealKobaGradientPicker({
     });
   }, [selectedStop]);
 
-
   const handleColorChange = useCallback((newColor: string) => {
+    if (!selectedStop) return;
+    const newStops = stops
+      .map(stop =>
+        stop.id === selectedStop.id
+          ? { ...stop, color: newColor }
+          : stop
+      )
+      .sort((a, b) => a.position - b.position);
+
+    updateStops(newStops);
+  }, [selectedStop, stops]);
+
+  /* const handleColorChange = useCallback((newColor: string) => {
+    console.log("Bejövő color", newColor)
+    if (!selectedStop) return;
     setStops(prev => {
       const newStops = prev
         .map(stop =>
-          stop.id === selectedStopId
+          stop.id === selectedStop.id
             ? { ...stop, color: newColor }
             : stop
         )
         .sort((a, b) => a.position - b.position);
+
+      onChangeComplete?.(newStops);
       return newStops;
     });
-    // onChangeComplete?.(stops);
-  }, [selectedStopId]);
+ */
 
-  const handleColorChangeCallback = useCallback((e: string) => {
-    handleColorChange(e);
-  }, [handleColorChange]);
+  // onChangeComplete?.(stops);
+  //}, [selectedStop, stops]);
 
   const gestureCreateTrackTap = Gesture.Tap().runOnJS(true).onStart((evt) => { Keyboard.dismiss(); handleTap(evt); }); // Create
   const gestureStop = (stopId: number) => Gesture.Tap().runOnJS(true).onStart((evt) => { Keyboard.dismiss(); setSelectedStopId(stopId) }); // Select
 
   const sortedStops = useMemo(() => [...stops].sort((a, b) => a.position - b.position), [stops]);
 
-  const { colors: gradientColors, locations: gradientLocations } = generateOklabGradient(sortedStops, 50);
+  const { colors: gradientColors, locations: gradientLocations } = useMemo(() => {
+    return generateOklabGradient(sortedStops, 24);
+  }, [sortedStops]); // <--- Ez a kulcs!
 
   //const gradientColors = sortedStops.map(s => s.color);
   //const gradientLocations = sortedStops.map(s => s.position / 100);
 
-  if (process.env.NODE_ENV === 'development') {
-    const ids = stops.map(s => s.id);
-    if (new Set(ids).size !== ids.length) {
-      console.error('Duplicate stop IDs detected!', stops);
-    }
-  }
+  const renderCount = useRef(0);
+  renderCount.current++;
+  console.log("Render", renderCount)
+
+  const handleComplete = useCallback(() => {
+    // console.log("Mentett stops", stops)
+    // onChangeComplete?.(stops);
+  }, [stops]);
 
   return (
     <View className="flex flex-col gap-4">
@@ -187,7 +206,7 @@ function RealKobaGradientPicker({
         <View className="flex flex-col gap-4">
           <View className="flex flex-row gap-2">
             <View className="flex-1">
-              <KobaSlider initialValue={Math.round(selectedStop.position) ?? 0} onValueChange={handleSliderChange} onValueChangeComplete={() => onChangeComplete?.(stops)} />
+              <KobaSlider initialValue={Math.round(selectedStop.position) ?? 0} onValueChange={handleSliderChange} onValueChangeComplete={handleComplete} />
             </View>
             <View className="flex">
               <Pressable className="flex bg-red-500 h-10 w-10 rounded-full items-center justify-center" onPress={(e) => removeStop(selectedStop.id)}>
@@ -196,7 +215,7 @@ function RealKobaGradientPicker({
             </View>
           </View>
           <View>
-            <KobaColorPicker key={selectedStopId} initialColor={selectedStop.color} onColorChange={handleColorChangeCallback} onChangeComplete={() => onChangeComplete?.(stops)} />
+            <KobaColorPicker key={selectedStopId} initialColor={selectedStop.color} onColorChange={handleColorChange} onChangeComplete={handleComplete} />
           </View>
         </View>
       )}

@@ -59,6 +59,7 @@ function LabelledInputBox({
       <ThemedText className="text-lg ml-2">{label}</ThemedText>
       <TextInput
         className={`rounded-md text-neutral-800 dark:text-neutral-200 text-center w-14 h-full`}
+        style={{ textAlignVertical: "center", includeFontPadding: false, paddingVertical: 0, }}
         value={inputValue}
         keyboardType="numeric"
         onFocus={() => setFocused(true)}

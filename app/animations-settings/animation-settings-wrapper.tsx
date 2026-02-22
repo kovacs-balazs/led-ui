@@ -1,6 +1,7 @@
 // components/animation/AnimationWrapper.tsx
 import { ThemedView } from "@/components/themed-view";
 import { getAnimationById } from "@/config/animations";
+import { useLedStripsStore } from "@/hooks/use-ledstrips";
 import { AnimationConfig } from "@/types/types";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { ReactNode, useEffect } from "react";
@@ -17,6 +18,8 @@ export default function AnimationWrapper({ children }: AnimationWrapperProps) {
   const animationId = Number(id);
   const animation: AnimationConfig | undefined = getAnimationById(animationId);
 
+  const { selected } = useLedStripsStore();
+
   useEffect(() => {
     if (!animation) {
       router.back();
@@ -30,6 +33,15 @@ export default function AnimationWrapper({ children }: AnimationWrapperProps) {
       return;
     }
   }, [animation, animationId, router]);
+
+  if (!selected) {
+    return (
+      <Text className="text-neutral-800 dark:text-neutral-200">
+        No LED strip selected.
+      </Text>
+    );
+  }
+
 
   if (!animation) {
     return (

@@ -21,7 +21,6 @@ function RealKobaAnimationColors({ initialAnimation, onChange }: RealKobaAnimati
 
   const handleChangeAnimationColorType = useCallback((e) => {
     setSelected(e);
-    console.log("FASZ")
   }, []);
 
   const handleColorTypeChange = useCallback((e) => {
@@ -40,7 +39,7 @@ function RealKobaAnimationColors({ initialAnimation, onChange }: RealKobaAnimati
 
 
   const handleColorChange = useCallback((type, e) => {
-    const colorKey = type === "solid" ? "color" : "colors";
+    const colorKey = type === "solid" ? "color" : "gradient";
     const newData = {
       colors: {
         ...initialAnimation.colors,
@@ -52,20 +51,25 @@ function RealKobaAnimationColors({ initialAnimation, onChange }: RealKobaAnimati
       }
     };
 
+    // console.log(e)
     onChange(newData);
   }, [initialAnimation, selected]);
 
   // if(selected) console.log(selected, initialAnimation.colors[selected].color)
   return (
     <View className="p-4 gap-4 rounded-xl bg-neutral-300 dark:bg-neutral-800">
-      <KobaAnimationColorsPicker initialAnimation={initialAnimation} onChange={handleChangeAnimationColorType} />
-      <View className="border border-blue-500" />
+      {initialAnimation.colors.length === 0 && (
+        <>
+          <KobaAnimationColorsPicker initialAnimation={initialAnimation} onChange={handleChangeAnimationColorType} />
+          <View className="border border-blue-500" />
+        </>
+      )}
       {selected && (
         <KobaColorPickerMenu
           key={selected}
           type={initialAnimation.colors[selected].type}
           initialColor={initialAnimation.colors[selected].color}
-          initialStops={initialAnimation.colors[selected].colors}
+          initialStops={initialAnimation.colors[selected].gradient}
           onColorTypeChange={handleColorTypeChange}
           onChangeComplete={handleColorChange}
         />

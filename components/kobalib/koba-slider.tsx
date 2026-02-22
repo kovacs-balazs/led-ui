@@ -99,7 +99,9 @@ function RealKobaSlider({
     onValueChange?.(newValue);
     setValue(newValue);
 
-    if (complete) onValueChangeComplete?.(newValue);
+    if (complete) {
+      onValueChangeComplete?.(newValue);
+    }
   };
 
   const gestureSubmit = () => {

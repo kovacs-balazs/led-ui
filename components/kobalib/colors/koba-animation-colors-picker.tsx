@@ -39,12 +39,12 @@ function RealKobaAnimationColorPicker({ initialAnimation, onChange }: RealKobaAn
   }
 
   return (
-    <View className="">
+    <View>
       <View className="flex flex-row flex-wrap gap-3 justify-center">
         {keys.map((key, idx) => (
           <Pressable
             key={idx}
-            className={`p-3 w-fit ${key === selected ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-400 dark:bg-neutral-600"} rounded-xl`}
+            className={`p-2 w-fit ${key === selected ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-400 dark:bg-neutral-600"} rounded-xl`}
             onPress={() => {
               setSelected(key);
               onChange(key);
