@@ -123,14 +123,12 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
 
   add: (newStripData: Omit<TypeLedStrip, "id">) => {
     set((state) => {
-      // Generáljunk új ID-t (legnagyobb meglévő + 1)
-      const maxId =
-        state.data.length > 0
-          ? Math.max(...state.data.map((strip) => strip.id))
-          : -1;
+      if (state.data.length >= 10) return state;
 
-      const newId = maxId + 1;
+      const newId = Array.from({ length: 10 }, (_, i) => i)
+        .find((id) => !state.data.some((strip) => strip.id === id));
 
+      if (newId === undefined) return state;
       // Új LED szalag objektum
       const newStrip: TypeLedStrip = {
         ...newStripData,
@@ -140,7 +138,6 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
       // Adjuk hozzá az adatokhoz
       const newData = [...state.data, newStrip];
 
-      console.log(maxId, newId, newStrip);
       // Válasszuk ki az új szalagot
       return {
         data: newData,

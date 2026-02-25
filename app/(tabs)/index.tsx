@@ -7,6 +7,7 @@ import { useLedStripsStore } from "@/hooks/use-ledstrips";
 import { useSettingsStore } from "@/hooks/use-settings";
 import { generateUniqueName } from "@/utils/utils";
 import { useCallback, useEffect } from "react";
+import Toast from "react-native-toast-message";
 import "../../global.css";
 
 /*
@@ -33,6 +34,16 @@ export default function HomeScreen() {
   }, [fetchLedStrips, fetchSettings]);
 
   const handleAdd = useCallback(async () => {
+    if (data.length >= 10) {
+      Toast.show({
+        type: "error",
+        text1: "Limit Reached",
+        text2: "Maximum number of LED strips reached.",
+        position: "bottom",
+        visibilityTime: 2000,
+      });
+      return;
+    }
     const newLedStrip = await getNewLedStrip(generateUniqueName(data));
     add(newLedStrip);
 
