@@ -155,7 +155,7 @@ function RealKobaSlider({
     widthRef.current = e.nativeEvent.layout.width - 12;
     setRenderKey((prev) => prev + 1);
   };
-
+  
   return (
     <View className="mb-4">
       <View className="">

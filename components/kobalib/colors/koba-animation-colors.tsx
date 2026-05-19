@@ -23,42 +23,61 @@ function RealKobaAnimationColors({ initialAnimation, onChange }: RealKobaAnimati
     setSelected(e);
   }, []);
 
-  const handleColorTypeChange = useCallback((e) => {
-    const newData = {
-      colors: {
-        ...initialAnimation.colors,
-        [selected]: {
-          ...initialAnimation.colors[selected],
-          type: e
+  const handleColorTypeChange = useCallback((type: string) => {
+    onChange({
+      key: selected,
+      type,
+    });
+  }, [selected, onChange]);
+
+  /*   const handleColorTypeChange = useCallback((e) => {
+      const newData = {
+        colors: {
+          ...initialAnimation.colors,
+          [selected]: {
+            ...initialAnimation.colors[selected],
+            type: e
+          }
         }
-      }
-    };
-
-    onChange(newData);
-  }, [initialAnimation, selected]);
-
-
-  const handleColorChange = useCallback((type, e) => {
-    const colorKey = type === "solid" ? "color" : "gradient";
-    const newData = {
-      colors: {
-        ...initialAnimation.colors,
-        [selected]: {
-          ...initialAnimation.colors[selected],
-          type: type,
-          [colorKey]: e,
+      };
+  
+      onChange(newData);
+    }, [initialAnimation, selected]);
+   */
+  const handleColorChange = useCallback((type, value) => {
+    onChange({
+      key: selected,
+      type,
+      value,
+    });
+  }, [selected, onChange]);
+  /*   const handleColorChange = useCallback((type, e) => {
+      const colorKey = type === "solid" ? "color" : "gradient";
+      const newData = {
+        colors: {
+          ...initialAnimation.colors,
+          [selected]: {
+            ...initialAnimation.colors[selected],
+            type: type,
+            [colorKey]: e,
+          }
         }
-      }
-    };
-
-    // console.log(e)
-    onChange(newData);
-  }, [initialAnimation, selected]);
+      };
+  
+      // console.log(e)
+      onChange(newData);
+      onChange({
+        selected,
+        type,
+        value: e
+      })
+    }, [initialAnimation, selected]); */
 
   // if(selected) console.log(selected, initialAnimation.colors[selected].color)
+  
   return (
     <View className="p-4 gap-4 rounded-xl bg-neutral-300 dark:bg-neutral-800">
-      {initialAnimation.colors.length === 0 && (
+      {selected && (
         <>
           <KobaAnimationColorsPicker initialAnimation={initialAnimation} onChange={handleChangeAnimationColorType} />
           <View className="border border-blue-500" />

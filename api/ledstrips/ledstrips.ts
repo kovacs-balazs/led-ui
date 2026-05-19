@@ -1,9 +1,10 @@
+import { BASE_URL } from "../api";
+
 // Use environment variable or fallback to localhost for development
-const BACKEND_BASE_URL = "http://192.168.1.202:8000";
 
 export async function getLedStrips() {
   try {
-    const response = await fetch(`${BACKEND_BASE_URL}/api/ledstrips`);
+    const response = await fetch(`${BASE_URL}/api/ledstrips`);
 
     if (!response.ok) {
       throw new Error(
@@ -21,7 +22,7 @@ export async function getLedStrips() {
 
 export async function updateLedStrips(payload: unknown) {
   try {
-    const response = await fetch(`${BACKEND_BASE_URL}/api/ledstrips/update`, {
+    const response = await fetch(`${BASE_URL}/api/ledstrips/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -47,7 +48,7 @@ export async function updateLedStrips(payload: unknown) {
 export async function getNewLedStrip(name: string) {
   try {
     const response = await fetch(
-      `${BACKEND_BASE_URL}/api/ledstrips/new?name=${encodeURIComponent(name)}`,
+      `${BASE_URL}/api/ledstrips/new?name=${encodeURIComponent(name)}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },

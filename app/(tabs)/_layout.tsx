@@ -1,16 +1,19 @@
 import { router, Tabs } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { ConsoleIcon } from "@/components/icons/console-icon";
 import { LedIcon } from "@/components/icons/led-icon";
+import { PowerIcon } from "@/components/icons/power-icon";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { SettingsIcon } from "@/components/icons/settings-icon";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useLedStripsStore } from "@/hooks/use-ledstrips";
+import { usePowerStore } from "@/hooks/use-power";
 import { useSettingsStore } from "@/hooks/use-settings";
+import { connectWebSocket, disconnectWebSocket } from "@/hooks/websocket";
 import { Header } from "@react-navigation/elements";
 import {
   ActivityIndicator,
@@ -30,6 +33,33 @@ export default function TabLayout() {
     loading: settingsLoading,
     error: settingsError,
   } = useSettingsStore();
+
+
+  useEffect(() => {
+    connectWebSocket();
+
+    return () => {
+      disconnectWebSocket();
+    };
+  }, []);
+
+  const { power, save: savePower, setPower } = usePowerStore();
+
+  const handlePowerButton = useCallback(() => {
+    const next = !power;
+    setPower(next);
+    savePower();
+
+    Toast.show({
+      type: "success",
+      text1: next ? "LEDs Enabled" : "LEDs Disabled",
+      text2: next
+        ? "All strips are now active"
+        : "All strips are now inactive",
+      position: "bottom",
+      visibilityTime: 2000,
+    });
+  }, [power, setPower, savePower]);
 
   const handleSave = useCallback(async () => {
     try {
@@ -102,6 +132,20 @@ export default function TabLayout() {
     </Pressable>
   );
 
+  const renderHeaderLeft = () => (
+    <Pressable
+      onPress={handlePowerButton}
+      className="p-4"
+      style={({ pressed }) => ({
+        transform: [{ scale: pressed ? 0.8 : 1 }],
+      })}
+      accessibilityRole="button"
+      accessibilityLabel="Power toggle"
+    >
+      <PowerIcon color={power ? "#00FF00" : "#FF0000"} size={24} />
+    </Pressable>
+  );
+
   return (
     <Tabs
       screenOptions={{
@@ -135,6 +179,7 @@ export default function TabLayout() {
             <LedIcon color={color} size={28} />
           ),
           headerRight: () => renderHeaderRight(loading, handleSave),
+          headerLeft: () => renderHeaderLeft(),
         }}
       />
 
@@ -147,6 +192,7 @@ export default function TabLayout() {
             // <LedIcon color={"#000000"} size={24} />
           ),
           headerRight: () => renderHeaderRight(loading, handleSave),
+          headerLeft: () => renderHeaderLeft(),
         }}
       />
       <Tabs.Screen
@@ -174,7 +220,8 @@ export default function TabLayout() {
 
               {renderHeaderRight(settingsLoading, handleSettingsSave)}
             </View>
-          )
+          ),
+          headerLeft: () => renderHeaderLeft(),
         }}
       />
 

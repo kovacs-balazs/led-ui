@@ -20,7 +20,9 @@
       },
       "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "resize",
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "me.koba1.ledui",
+      "usesCleartextTraffic": true
     },
     "web": {
       "output": "static",
@@ -49,6 +51,12 @@
       "style": "auto",
       "translucent": true,
       "backgroundColor": "#00000000"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "04e85482-b11a-4654-98d2-53599012b12b"
+      }
     }
   }
 }

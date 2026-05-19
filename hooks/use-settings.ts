@@ -7,6 +7,7 @@ type SettingsState = {
   loading: boolean;
   error: string | null;
 
+  setSettings: (settings: Settings) => void;
   fetch: () => Promise<void>;
   update: (partial: Partial<Settings>) => void;
   updateWiFi: (partial: Partial<Settings["wifi"]>) => void;
@@ -20,6 +21,10 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   },
   loading: false,
   error: null,
+
+  setSettings: (settings) => {
+    set({data: settings})
+  },
 
   fetch: async () => {
     set({ loading: true, error: null });

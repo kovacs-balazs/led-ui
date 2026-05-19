@@ -6,15 +6,22 @@ import KobaTabPicker from "@/components/kobalib/koba-tab-picker";
 import { ThemedText } from "@/components/themed-text";
 import { Colors } from "@/constants/theme";
 import { useLedStripsStore } from "@/hooks/use-ledstrips";
+import { TypeLedStrip } from "@/types/types";
 import { View } from "react-native";
 import AnimationWrapper from "../animation-settings-wrapper";
 
 export default function WaveAnimationSettings() {
-  const { update, selected } = useLedStripsStore();
+  const { data, selectedId, updateAnimation } = useLedStripsStore();
 
   return (
     <AnimationWrapper>
       {(animation) => {
+        const selected: TypeLedStrip | undefined = data.find((s) => s.id === selectedId);
+
+        if (!selected) {
+          return (<ThemedText>No selected ledstrip.</ThemedText>);
+        }
+
         const animIndex = selected.animations.findIndex(
           (anim) => anim.id === animation.id,
         );
@@ -23,76 +30,115 @@ export default function WaveAnimationSettings() {
           return <ThemedText>Animation not found on this strip.</ThemedText>;
         }
 
-        const currentAnim = selected.animations[animIndex];
+        //const currentAnim = selected.animations[animIndex];
 
         const updateSpeed = (newValue: number) => {
+          updateAnimation(selected.id, animation.id, (anim) => ({
+            ...anim,
+            speed: newValue,
+          }));
+        };
+
+        /* const updateSpeed = (newValue: number) => {
           const newAnimations = [...selected.animations];
           newAnimations[animIndex] = {
-            ...currentAnim,
+            ...newAnimations[animIndex],
             speed: newValue,
           };
 
           update({ id: selected.id, animations: newAnimations });
-        };
+        }; */
 
         const updateLength = (newValue: number) => {
+          updateAnimation(selected.id, animation.id, (anim) => ({
+            ...anim,
+            length: newValue,
+          }));
+        };
+
+        /* const updateLength = (newValue: number) => {
           const newAnimations = [...selected.animations];
           newAnimations[animIndex] = {
-            ...currentAnim,
+            ...newAnimations[animIndex],
             length: newValue,
           };
 
           update({ id: selected.id, animations: newAnimations });
         };
+ */
+        /*         const updateDistance = (newValue: boolean) => {
+                  const newAnimations = [...selected.animations];
+                  newAnimations[animIndex] = {
+                    ...newAnimations[animIndex],
+                    distance: newValue,
+                  };
+        
+                  update({ id: selected.id, animations: newAnimations });
+                }; */
 
         const updateDistance = (newValue: boolean) => {
-          const newAnimations = [...selected.animations];
-          newAnimations[animIndex] = {
-            ...currentAnim,
+          updateAnimation(selected.id, animation.id, (anim) => ({
+            ...anim,
             distance: newValue,
-          };
-
-          update({ id: selected.id, animations: newAnimations });
+          }));
         };
 
         const updateType = (newType: string) => {
           updateKey("type", newType);
+
         }
 
         const updateKey = (key, value) => {
-          const newAnimations = [...selected.animations];
-          newAnimations[animIndex] = {
-            ...currentAnim,
-            [key]: value,
-          };
 
-          update({ id: selected.id, animations: newAnimations });
+          updateAnimation(selected.id, animation.id, (anim) => ({
+            ...anim,
+            [key]: value,
+          }));
         };
 
-        const handleNewColorData = (data: any) => {
-          const newAnimations = [...selected.animations];
+        const handleNewColorData = ({ key, type, value }) => {
+          /* const newAnimations = [...selected.animations];
           const anim = newAnimations[animIndex];
 
           newAnimations[animIndex] = {
             ...anim,
-            ...data
+            colors: {
+              ...anim.colors,
+              [key]: {
+                ...anim.colors[key],
+                type,
+                [type === "solid" ? "color" : "gradient"]: value
+              }
+            }
           };
 
-          update({ id: selected.id, animations: newAnimations });
+          update({ id: selected.id, animations: newAnimations }); */
+          
+          updateAnimation(selected.id, animation.id, (anim) => ({
+            ...anim,
+            colors: {
+              ...anim.colors,
+              [key]: {
+                ...anim.colors[key],
+                type,
+                [type === "solid" ? "color" : "gradient"]: value
+              }
+            }
+          }));
         };
-
+        
         return (
           <View className="flex flex-col gap-4">
             <KobaNumberInputBox
               label="Length"
-              initialValue={currentAnim.length}
+              initialValue={selected.animations[animIndex].length}
               minValue={0}
               maxValue={100}
               onSubmit={updateLength}
             />
             <KobaSlider
               label="Speed"
-              initialValue={currentAnim.speed}
+              initialValue={selected.animations[animIndex].speed}
               onValueChangeComplete={updateSpeed}
             />
             {/* <KobaNumberInputBox
@@ -104,17 +150,17 @@ export default function WaveAnimationSettings() {
             /> */}
             <KobaSwitch
               label="Distance"
-              value={currentAnim.distance}
+              value={selected.animations[animIndex].distance}
               onChange={updateDistance}
             />
-            <KobaTabPicker label="Wave Type" initialTab={currentAnim.type} tabs={["default", "reverse", "bounce"]} onChange={updateType} />
+            <KobaTabPicker label="Wave Type" value={selected.animations[animIndex].type} tabs={["default", "reverse", "bounce"]} onChange={updateType} />
             <View
               className="h-0.5"
               style={{ backgroundColor: Colors.separatorLine }}
             />
             <View className="flex">
               {/* // Az a baj, hogy ha leupdateli akkor a belső componentnekben a "régi" initialAnimation marad. */}
-              <KobaAnimationColors initialAnimation={currentAnim} onChange={handleNewColorData} />
+              <KobaAnimationColors initialAnimation={selected.animations[animIndex]} onChange={handleNewColorData} />
             </View>
           </View>
         );

@@ -3,6 +3,10 @@ export interface WiFiSettings {
   password: string;
 }
 
+export interface Power {
+  power: true
+}
+
 export interface Settings {
   wifi: WiFiSettings;
   bluetoothName: string;

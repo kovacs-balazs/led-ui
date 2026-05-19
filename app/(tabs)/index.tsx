@@ -20,7 +20,7 @@ const handleSave = async () => {
 export default function HomeScreen() {
   const {
     data,
-    selected,
+    selectedId,
     fetch: fetchLedStrips,
     add,
     loading,
@@ -31,8 +31,10 @@ export default function HomeScreen() {
     fetchLedStrips();
     fetchSettings();
     console.log("Fetched ledstrips and settings");
+
   }, [fetchLedStrips, fetchSettings]);
 
+  console.log(data);
   const handleAdd = useCallback(async () => {
     if (data.length >= 10) {
       Toast.show({
@@ -61,12 +63,25 @@ export default function HomeScreen() {
     );
   }
 
-  if (!selected) {
+  if (selectedId === null) {
     return (
-      <ThemedView className="flex-1 justify-center items-center">
-        <Text className="text-neutral-800 dark:text-neutral-200">
-          No LED strip selected.
-        </Text>
+      <ThemedView className="flex-1 justify-between">
+        <ThemedView className="flex items-center my-auto">
+          <Text className="text-neutral-800 dark:text-neutral-200 flex">
+            No LED strip selected.
+          </Text>
+        </ThemedView>
+        <Pressable className="py-4 px-24" onPress={handleAdd}>
+          {({ pressed }) => {
+            return (
+              <View className={`p-2.5 bg-blue-600 rounded-xl ${pressed ? "scale-95" : "scale-100"}`}>
+                <Text className="text-xl text-neutral-200 font-bold text-center">
+                  Add
+                </Text>
+              </View>
+            );
+          }}
+        </Pressable>
       </ThemedView>
     );
   }
@@ -79,7 +94,7 @@ export default function HomeScreen() {
             <LedStrip
               key={ledStrip.name}
               ledStrip={ledStrip}
-              selected={selected.id === ledStrip.id}
+              selected={selectedId === ledStrip.id}
             />
           ))}
         </View>

@@ -4,13 +4,21 @@ import { ThemedView } from "@/components/themed-view";
 import { AUDIO_ANIMATIONS, IDLE_ANIMATIONS } from "@/config/animations";
 import { Colors } from "@/constants/theme";
 import { useLedStripsStore } from "@/hooks/use-ledstrips";
-import { useState } from "react";
+import { TypeLedStrip } from "@/types/types";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function AnimationsScreen() {
   const [selectedType, setSelectedType] = useState(0); // 0 = idle, 1 = audio
 
-  const { selected } = useLedStripsStore();
+  const { data, selectedId } = useLedStripsStore();
+  const selected: TypeLedStrip | undefined = data.find(s => s.id === selectedId);
+
+  useEffect(() => {
+    if (selected) {
+      setSelectedType(selected.animation < 100 ? 0 : 1);
+    }
+  }, [selected]);
 
   return (
     <ThemedView className="flex-1">

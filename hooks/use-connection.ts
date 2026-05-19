@@ -1,10 +1,9 @@
+import { BASE_URL } from "@/api/api";
 import * as Network from "expo-network";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export type RadxaStatus = "NOT_WIFI" | "DEVICE_OFFLINE" | "CONNECTED";
+export type DeviceStatus = "NOT_WIFI" | "DEVICE_OFFLINE" | "CONNECTED";
 
-const RADXA_IP = "192.168.1.202";
-const RADXA_PORT = 8000;
 const TIMEOUT = 3000;
 
 async function checkDevice(): Promise<boolean> {
@@ -13,7 +12,7 @@ async function checkDevice(): Promise<boolean> {
     const timeout = setTimeout(() => controller.abort(), TIMEOUT);
 
     const response = await fetch(
-      `http://${RADXA_IP}:${RADXA_PORT}/api/health`,
+      `${BASE_URL}/api/health`,
       {
         signal: controller.signal,
       },
@@ -26,8 +25,8 @@ async function checkDevice(): Promise<boolean> {
   }
 }
 
-export function useConnection(pollInterval = 5000) {
-  const [status, setStatus] = useState<RadxaStatus>("DEVICE_OFFLINE");
+export function useConnection(pollInterval = TIMEOUT) {
+  const [status, setStatus] = useState<DeviceStatus>("DEVICE_OFFLINE");
   const [loading, setLoading] = useState<boolean>(false);
 
   const isCheckingRef = useRef(false);
@@ -58,7 +57,7 @@ export function useConnection(pollInterval = 5000) {
       setLoading(false);
       isCheckingRef.current = false;
     }
-  }, []);
+  }, [status]);
 
   useEffect(() => {
     checkConnection();

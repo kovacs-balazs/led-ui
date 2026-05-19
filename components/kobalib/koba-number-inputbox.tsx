@@ -51,6 +51,7 @@ export default function KobaNumberInputBox({
         }}
         style={{ fontSize: 16 }}
         returnKeyType="done"
+        keyboardType="decimal-pad"
         /* onSubmitEditing={() => {
         }} */
         onEndEditing={() => {

@@ -1,6 +1,6 @@
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useLedStripsStore } from "@/hooks/use-ledstrips";
-import { AnimationConfig } from "@/types/types";
+import { AnimationConfig, TypeLedStrip } from "@/types/types";
 import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { SettingsIcon } from "../icons/settings-icon";
@@ -11,21 +11,20 @@ export type AnimationProps = {
 };
 
 export function Animation({ animation, selected }: AnimationProps) {
-  const { update, selected: selectedLedStrip } = useLedStripsStore();
+  const { data, update, selectedId } = useLedStripsStore();
+
+  const selectedStrip: TypeLedStrip | undefined = data.find((s) => s.id === selectedId);
 
   const colorScheme = useColorScheme();
   const route: string =
-    "/animations-settings/" +
-    (animation.id < 100 ? "idle" : "audio") +
-    "/" +
-    animation.route;
+    "/animations-settings/" + (animation.id < 100 ? "idle" : "audio") + "/" + animation.route;
 
   const selectAnimation = () => {
-    if (!selectedLedStrip) {
+    if (!selectedStrip) {
       return;
     }
 
-    update({ id: selectedLedStrip.id, animation: animation.id });
+    update({ id: selectedStrip.id, animation: animation.id });
   };
 
   return (

@@ -18,7 +18,10 @@ export default function AnimationWrapper({ children }: AnimationWrapperProps) {
   const animationId = Number(id);
   const animation: AnimationConfig | undefined = getAnimationById(animationId);
 
-  const { selected } = useLedStripsStore();
+  const selected = useLedStripsStore(
+    (s) => s.data.find(x => x.id === s.selectedId) ?? null
+  );
+
 
   useEffect(() => {
     if (!animation) {

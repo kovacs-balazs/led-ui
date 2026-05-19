@@ -40,9 +40,7 @@ export const AUDIO_ANIMATIONS: AnimationConfig[] = [
 export const getAnimationById = (
   animationId: number,
 ): AnimationConfig | undefined => {
-  return (animationId < 100 ? IDLE_ANIMATIONS : AUDIO_ANIMATIONS).find(
-    (el) => el.id === animationId,
-  );
+  return (animationId < 100 ? IDLE_ANIMATIONS : AUDIO_ANIMATIONS).find((el) => el.id === animationId);
 };
 
 /* 

@@ -1,14 +1,16 @@
 import { getLedStrips, updateLedStrips } from "@/api/ledstrips/ledstrips";
-import { TypeLedStrip } from "@/types/types";
+import { BaseAnimation, TypeLedStrip } from "@/types/types";
 import { create } from "zustand";
 
 type LedStripsState = {
   data: TypeLedStrip[];
-  selected: TypeLedStrip | null;
+  selectedId: number | null;
   loading: boolean;
   error: string | null;
 
   fetch: () => Promise<void>;
+  setData: (data) => void;
+  setSelectedId: (id: number) => void;
   // Csak helyi frissítés (nincs hálózati hívás)
   update: (payload: { id: number } & Partial<TypeLedStrip>) => void;
   // Szerverre küldés a kiválasztott szalag helyi állapotával
@@ -16,23 +18,35 @@ type LedStripsState = {
   delete: (id: number) => void;
   add: (newStrip: Omit<TypeLedStrip, "id">) => void; // Új LED szalag hozzáadása
   setSelected: (strip: TypeLedStrip | null) => void;
+  initSocket(): () => void;
+  updateAnimation: (
+    stripId: number,
+    animationId: number,
+    updater: (anim: BaseAnimation) => BaseAnimation
+  ) => void;
 };
 
 export const useLedStripsStore = create<LedStripsState>((set, get) => ({
   data: [],
-  selected: null,
+  selectedId: null,
   loading: false,
   error: null,
+
+  setData: (data) => set({ data }),
+  setSelectedId: (id) => set({ selectedId: id }),
 
   fetch: async () => {
     set({ loading: true, error: null });
     try {
       const data = await getLedStrips();
-      set({ data });
+      /* set({ data }); */
 
-      set((state) => ({
-        selected: state.selected || data[0] || null,
-      }));
+      set((state) => {
+        return {
+          data: data,
+          selectedId: state.selectedId ?? data[0].id ?? null,
+        }
+      });
     } catch (e) {
       console.error("Error fetching LED strips:", e);
       set({ error: (e as Error).message });
@@ -53,12 +67,12 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
         strip.id === payload.id ? { ...strip, ...payload } : strip,
       );
 
-      const newSelected =
+      /* const newSelected =
         state.selected?.id === payload.id
           ? { ...state.selected, ...payload }
           : state.selected;
-
-      return { data: newData, selected: newSelected };
+ */
+      return { data: newData, /* selected: newSelected */ };
     });
   },
 
@@ -99,9 +113,11 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
     set((state) => {
       const newData = state.data.filter((strip) => strip.id !== idToDelete);
 
-      let newSelected: TypeLedStrip | null = state.selected;
+      const currentSelected = state.data.find(s => s.id === state.selectedId) || null;
 
-      if (state.selected?.id === idToDelete) {
+      let newSelected: TypeLedStrip | null = currentSelected;
+
+      if (state.selectedId === idToDelete) {
         if (newData.length > 0) {
           // Legközelebbi ID keresése
           newSelected = newData.reduce((closest, current) => {
@@ -116,7 +132,7 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
 
       return {
         data: newData,
-        selected: newSelected,
+        selectedId: newSelected?.id,
       };
     });
   },
@@ -141,10 +157,30 @@ export const useLedStripsStore = create<LedStripsState>((set, get) => ({
       // Válasszuk ki az új szalagot
       return {
         data: newData,
-        selected: state.selected || newStrip,
+        selectedId: state.selectedId ?? newStrip.id,
       };
     });
   },
 
-  setSelected: (strip) => set({ selected: strip }),
+  setSelected: (strip) => set({ selectedId: strip?.id }),
+  initSocket: () => {
+    connectWebSocket(set);
+  },
+
+  updateAnimation: (stripId, animationId, updater) => {
+    set((state) => ({
+      data: state.data.map((strip) => {
+        if (strip.id !== stripId) return strip;
+
+        return {
+          ...strip,
+          animations: strip.animations.map((anim) =>
+            anim.id === animationId
+              ? updater(anim)
+              : anim
+          ),
+        };
+      }),
+    }));
+  }
 }));

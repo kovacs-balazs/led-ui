@@ -1,7 +1,7 @@
-const BACKEND_BASE_URL = "http://192.168.1.202:8000";
+import { BASE_URL } from "../api";
 
 export async function getConsole() {
-  const response = await fetch(`${BACKEND_BASE_URL}/api/console`);
+  const response = await fetch(`${BASE_URL}/api/console`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch led strips");
@@ -11,7 +11,7 @@ export async function getConsole() {
 }
 
 export async function clearConsole() {
-  const response = await fetch(`${BACKEND_BASE_URL}/api/console/clear`, {
+  const response = await fetch(`${BASE_URL}/api/console/clear`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
   });

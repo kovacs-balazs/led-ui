@@ -1,15 +1,15 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { RadxaStatus } from "@/hooks/use-connection";
+import { DeviceStatus } from "@/hooks/use-connection";
 import { ActivityIndicator } from "react-native";
 
-const statusText: Record<RadxaStatus, string> = {
+const statusText: Record<DeviceStatus, string> = {
   NOT_WIFI: "Kapcsolódj WiFi-re",
   DEVICE_OFFLINE: "Radxa nem elérhető",
   CONNECTED: "Csatlakozva",
 };
 
-export default function LoadingScreen({ status }: { status: RadxaStatus }) {
+export default function LoadingScreen({ status }: { status: DeviceStatus }) {
   const text: string = statusText[status];
 
   return (

@@ -238,7 +238,7 @@ function RealKobaColorPicker({
   const renderCount = useRef(0);
   renderCount.current++;
   // console.log("Render", renderCount, svX, svY, initialHsv)
-
+  
   return (
     <View className="flex">
       {/* NAGY KOCKA PICKER */}
