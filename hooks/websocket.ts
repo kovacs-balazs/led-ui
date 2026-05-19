@@ -1,22 +1,47 @@
+import { API_PORT, DEVICE_IP } from "@/api/api";
 import { useLedStripsStore } from "./use-ledstrips";
 import { usePowerStore } from "./use-power";
 import { useSettingsStore } from "./use-settings";
+import { useConnectionStore } from "./use-connection-store";
 
 let ws: WebSocket | null = null;
 let reconnectTimeout: any = null;
 let connecting = false;
 let pingInterval: any = null;
 
+const WS_RECONNECT_DELAY = 2000;
+
+const setConnectionOffline = () => {
+  useConnectionStore.getState().setStatus("DEVICE_OFFLINE");
+  useConnectionStore.getState().setLoading(false);
+};
+
+const setConnectionConnected = () => {
+  useConnectionStore.getState().setStatus("CONNECTED");
+  useConnectionStore.getState().setLoading(false);
+};
+
 const connectWebSocket = () => {
-  if (ws || connecting) return;
+  if (
+    connecting ||
+    ws?.readyState === WebSocket.OPEN ||
+    ws?.readyState === WebSocket.CONNECTING
+  ) {
+    return;
+  }
 
   connecting = true;
 
-  ws = new WebSocket(`ws://192.168.1.202:8000/ws`);
+  const url = `ws://${DEVICE_IP}:${API_PORT}/ws`;
+  console.log("Connecting WS:", url);
+
+  ws = new WebSocket(url);
 
   ws.onopen = () => {
     connecting = false;
     console.log("WS connected");
+
+    setConnectionConnected();
 
     // START HEARTBEAT
     if (pingInterval) clearInterval(pingInterval);
@@ -91,11 +116,19 @@ const connectWebSocket = () => {
       pingInterval = null;
     }
 
-    reconnectTimeout = setTimeout(connectWebSocket, 2000); // csak egyszer!
+    setConnectionOffline();
+
+    if (reconnectTimeout) {
+      clearTimeout(reconnectTimeout);
+    }
+
+    reconnectTimeout = setTimeout(connectWebSocket, WS_RECONNECT_DELAY); // csak egyszer!
   };
 
   ws.onerror = (e) => {
     console.error("WS error", e);
+
+    setConnectionOffline();
     ws?.close();
   };
 };

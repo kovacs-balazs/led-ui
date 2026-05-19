@@ -9,12 +9,12 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 import { ThemedToast } from "@/components/kobalib/koba-toast";
-import { useConnection } from "@/hooks/use-connection";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import "../global.css";
 import LoadingScreen from "./loading";
+import { useConnection } from "@/hooks/use-connection";
 
 export const unstable_settings = {
   anchor: "(tabs)",

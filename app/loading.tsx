@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { DeviceStatus } from "@/hooks/use-connection";
+import { DeviceStatus } from "@/hooks/use-connection-store";
 import { ActivityIndicator } from "react-native";
 
 const statusText: Record<DeviceStatus, string> = {

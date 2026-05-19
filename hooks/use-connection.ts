@@ -1,8 +1,7 @@
 import { BASE_URL } from "@/api/api";
 import * as Network from "expo-network";
-import { useCallback, useEffect, useRef, useState } from "react";
-
-export type DeviceStatus = "NOT_WIFI" | "DEVICE_OFFLINE" | "CONNECTED";
+import { useCallback, useEffect, useRef } from "react";
+import { useConnectionStore } from "./use-connection-store";
 
 const TIMEOUT = 3000;
 
@@ -26,8 +25,11 @@ async function checkDevice(): Promise<boolean> {
 }
 
 export function useConnection(pollInterval = TIMEOUT) {
-  const [status, setStatus] = useState<DeviceStatus>("DEVICE_OFFLINE");
-  const [loading, setLoading] = useState<boolean>(false);
+  const status = useConnectionStore((state) => state.status);
+  const loading = useConnectionStore((state) => state.loading);
+
+  const setStatus = useConnectionStore((state) => state.setStatus);
+  const setLoading = useConnectionStore((state) => state.setLoading);
 
   const isCheckingRef = useRef(false);
 
@@ -57,7 +59,7 @@ export function useConnection(pollInterval = TIMEOUT) {
       setLoading(false);
       isCheckingRef.current = false;
     }
-  }, [status]);
+  }, [setStatus, setLoading]);
 
   useEffect(() => {
     checkConnection();

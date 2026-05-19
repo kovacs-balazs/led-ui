@@ -9,7 +9,7 @@ type LedStripsState = {
   error: string | null;
 
   fetch: () => Promise<void>;
-  setData: (data) => void;
+  setData: (data: TypeLedStrip[]) => void;
   setSelectedId: (id: number) => void;
   // Csak helyi frissítés (nincs hálózati hívás)
   update: (payload: { id: number } & Partial<TypeLedStrip>) => void;
